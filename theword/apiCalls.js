@@ -10,7 +10,7 @@ export const getReadings = () => {
 
 export const fetchReadings = async (date) => {
     try {
-        const response = await fetch(`http://192.168.8.102:8000/mass-readings/${date}`)
+        const response = await fetch(`http://192.168.8.101:8000/mass-readings/${date}`)
 
         if (response.status == 200) {
             const result = await response.json();
@@ -24,7 +24,7 @@ export const fetchReadings = async (date) => {
 
 export const fetchReflections = async () => {
     try {
-        const response = await fetch("http://192.168.8.102:8000/reflections/list")
+        const response = await fetch("http://192.168.8.101:8000/reflections/list")
 
         if (response.status == 200) {
             const result = await response.json();
@@ -40,7 +40,7 @@ export const fetchReflections = async () => {
 export const fetchYoutubeId = async (link) => {
 
     try {
-        const response = await fetch(`http://192.168.8.102:8000/vid${link}`)
+        const response = await fetch(`http://192.168.8.101:8000/vid${link}`)
 
         if (response.status == 200) {
             const result = await response.json();
@@ -56,7 +56,7 @@ export const fetchYoutubeId = async (link) => {
 
 export const fetchReflectionTextList = async () => {
     try {
-        const response = await fetch("http://192.168.8.102:8000/reflections/text/list")
+        const response = await fetch("http://192.168.8.101:8000/reflections/text/list")
 
         if (response.status == 200) {
             const result = await response.json();
@@ -70,7 +70,7 @@ export const fetchReflectionTextList = async () => {
 
 export const fetchReflectionTextSingle = async (url, date) => {
     try {
-        const response = await fetch(`http://192.168.8.102:8000/reflections/text/single/${date}`, {
+        const response = await fetch(`http://192.168.8.101:8000/reflections/text/single/${date}`, {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ url })

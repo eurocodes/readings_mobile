@@ -17,6 +17,8 @@ import {
     ItemsWrapper,
     ScrollWrapper
 } from '../styles/reflections.elements';
+import { PageView } from '../styles/home.elements';
+import { Indicator } from '../components/ActivityIndicator';
 
 const Item = ({ title, link }) => (
     <View>
@@ -44,32 +46,33 @@ const ReflectionScreen = ({ navigation }) => {
     return (
         <ReflectionsContainer >
             <StatusBar style="light" backgroundColor="#263759" />
-            <HeaderContainer>
-                <HeaderContent>
-                    <Feather onPress={() => navigation.openDrawer()} name="menu" size={22} color="#fff" />
-                    <Feather name="share-2" size={22} color="#fff" />
-                </HeaderContent>
-                <HeaderTextContainer>
-                    <HeaderText>Reflectional Videos from few days ago</HeaderText>
-                </HeaderTextContainer>
-                {/* <ReflectionSearch>
+            {reflections[0] ? <PageView>
+                <HeaderContainer>
+                    <HeaderContent>
+                        <Feather onPress={() => navigation.openDrawer()} name="menu" size={22} color="#fff" />
+                        <Feather name="share-2" size={22} color="#fff" />
+                    </HeaderContent>
+                    <HeaderTextContainer>
+                        <HeaderText>Reflectional Videos from few days ago</HeaderText>
+                    </HeaderTextContainer>
+                    {/* <ReflectionSearch>
                     <Feather name="search" size={22} color="#fff" />
                 </ReflectionSearch> */}
-            </HeaderContainer>
-            <ScrollWrapper>
-                <FlatListView>
-                    {reflections.map((reflection) => <ItemsWrapper key={reflection.id}>
-                        <RenderListView>
-                            <Item title={reflection.title} />
-                            <TouchableOpacity onPress={() => getFrame(reflection.link)}>
-                                <Feather name="eye" size={25} color="#0f2147" />
-                            </TouchableOpacity>
-                        </RenderListView>
-                        <LineBreaker />
-                    </ItemsWrapper>)}
-                </FlatListView>
-            </ScrollWrapper>
-
+                </HeaderContainer>
+                <ScrollWrapper>
+                    <FlatListView>
+                        {reflections.map((reflection) => <ItemsWrapper key={reflection.id}>
+                            <RenderListView>
+                                <Item title={reflection.title} />
+                                <TouchableOpacity onPress={() => getFrame(reflection.link)}>
+                                    <Feather name="eye" size={25} color="#0f2147" />
+                                </TouchableOpacity>
+                            </RenderListView>
+                            <LineBreaker />
+                        </ItemsWrapper>)}
+                    </FlatListView>
+                </ScrollWrapper>
+            </PageView> : <Indicator />}
         </ReflectionsContainer>
     )
 }

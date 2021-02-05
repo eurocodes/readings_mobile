@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { StatusBar } from 'expo-status-bar';
 import YoutubePlayer from 'react-native-youtube-iframe';
-import { HomeScreenContainer, Text } from '../styles/home.elements';
-import { Alert, Button } from 'react-native';
+import { VideoScreen } from '../styles/reflections.elements';
 
 
 const VideoFrame = ({ route, navigation }) => {
@@ -10,21 +9,21 @@ const VideoFrame = ({ route, navigation }) => {
     const onStateChange = useCallback((state) => {
         if (state === "ended") {
             setPlaying(false)
-            Alert.alert("Video has finished playing")
+            // Alert.alert("Video has finished playing")
         }
     },
         [],
     )
 
-    const togglePlaying = useCallback(
-        () => {
-            setPlaying((prev) => !prev);
-        },
-        [],
-    )
+    // const togglePlaying = useCallback(
+    //     () => {
+    //         setPlaying((prev) => !prev);
+    //     },
+    //     [],
+    // )
     const { id } = route.params;
     return (
-        <HomeScreenContainer >
+        <VideoScreen >
             <StatusBar style="light" />
             <YoutubePlayer
                 height={300}
@@ -32,8 +31,8 @@ const VideoFrame = ({ route, navigation }) => {
                 videoId={String(id)}
                 onChangeState={onStateChange}
             />
-            <Button title={playing ? "pause" : "play"} onPress={togglePlaying} />
-        </HomeScreenContainer>
+            {/* <Button title={playing ? "pause" : "play"} onPress={togglePlaying} /> */}
+        </VideoScreen>
     )
 }
 

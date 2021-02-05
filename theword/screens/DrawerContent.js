@@ -6,12 +6,13 @@ import {
     TitleWrapper,
     DrawerView,
     TitleInner,
-    Image,
+    HeaderImage,
     HeaderLabel,
     Title,
     Caption,
     DrawerSection,
-    BottomDrawerSection
+    BottomDrawerSection,
+    DrawerItemText,
 } from '../styles/home.elements';
 
 export default function DrawerContent(props) {
@@ -22,15 +23,14 @@ export default function DrawerContent(props) {
                 <ScrollContent>
                     <TitleWrapper>
                         <TitleInner>
-                            <Image
+                            {/* <HeaderImage
                                 source={{
                                     uri: "https://p.kindpng.com/picc/s/78-785827_user-profile-avatar-login-account-male-user-icon.png"
                                 }}
-                                size={40}
-                            />
+                                size={5}
+                            /> */}
                             <HeaderLabel>
-                                <Title>...</Title>
-                                <Caption>Welcome</Caption>
+                                <Title>Daily {"\n"}Readings {"\n"}with Reflections</Title>
                             </HeaderLabel>
                         </TitleInner>
                     </TitleWrapper>
@@ -38,37 +38,37 @@ export default function DrawerContent(props) {
                     <DrawerSection>
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <Feather name="book" color={color} size={size} />
+                                <Feather name="book" color="#fff" size={size} />
                             )}
-                            label="Daily Readings"
+                            label={() => <DrawerItemText>Daily Readings</DrawerItemText>}
                             onPress={() => { props.navigation.navigate("Daily Readings") }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <Feather name="video" color={color} size={size} />
+                                <Feather name="video" color="#fff" size={size} />
                             )}
-                            label="Daily Reflection"
+                            label={() => <DrawerItemText>Daily Reflection</DrawerItemText>}
                             onPress={() => { props.navigation.navigate("Daily Reflection") }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <Feather name="file-text" color={color} size={size} />
+                                <Feather name="file-text" color="#fff" size={size} />
                             )}
-                            label="Daily Reflection"
+                            label={() => <DrawerItemText>Daily Reflection</DrawerItemText>}
                             onPress={() => { props.navigation.navigate("Daily Reflection Text") }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <Feather name="star" color={color} size={size} />
+                                <Feather name="star" color="#fff" size={size} />
                             )}
-                            label="Rate this App"
+                            label={() => <DrawerItemText>Rate this App</DrawerItemText>}
                             onPress={() => { }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <Feather name="share-2" color={color} size={size} />
+                                <Feather name="share-2" color="#fff" size={size} />
                             )}
-                            label="Share this App"
+                            label={() => <DrawerItemText>Share this App</DrawerItemText>}
                             onPress={() => { }}
                         />
                     </DrawerSection>
@@ -76,10 +76,10 @@ export default function DrawerContent(props) {
             </DrawerContentScrollView>
             <BottomDrawerSection>
                 <DrawerItem
-                    icon={({ color, size }) => (
-                        <Feather name="log-out" color={color} size={size} />
+                    icon={({ size }) => (
+                        <Feather name="archive" color="#fff" size={size} />
                     )}
-                    label="Sign In"
+                    label={() => <DrawerItemText>More</DrawerItemText>}
                     onPress={() => { }}
                 />
             </BottomDrawerSection>

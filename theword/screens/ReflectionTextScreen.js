@@ -11,12 +11,14 @@ import {
     TopText,
     MediumText,
     ReadingBoldText,
-    VerseText
+    VerseText,
+    PageView
 } from '../styles/home.elements';
 import { TopBackground, LowerView, MessageText, View, InnerView } from '../styles/reflections.elements';
 import { fetchReflectionTextSingle } from '../apiCalls';
 import monstrance from '../assets/monstrance_host.jpg';
 import { Platform } from 'react-native';
+import { Indicator } from '../components/ActivityIndicator';
 
 const Item = ({ text }) => (
     <MessageText>{text}</MessageText>
@@ -34,6 +36,11 @@ const ReflectionTextScreen = ({ route, navigation }) => {
         const fetchSingleText = async () => {
             const urlStr = url;
             const response = await fetchReflectionTextSingle(urlStr, "");
+            let refDate = url.split("/")
+            refDate = refDate.slice(4, 5);
+            refDate = refDate[0];
+            refDate = refDate.split("-")
+            setDate(new Date(refDate[0], refDate[1] - 1, refDate[2]))
             setText(response)
         }
         fetchSingleText()
@@ -78,56 +85,60 @@ const ReflectionTextScreen = ({ route, navigation }) => {
 
     return (
         <HomeScreenContainer >
-            <HeaderContainer>
-                <TopBackground
-                    source={monstrance}
-                    imageStyle={{ borderBottomRightRadius: 65 }}
-                >
+            {text.message ? <PageView>
+                <HeaderContainer>
+                    <TopBackground
+                    >
 
-                    <StatusBar style="light" />
-                    <TouchCalendar onPress={() => showDatePicker()}>
-                        <CalendarText>{date.toDateString()},</CalendarText>
-                    </TouchCalendar>
-                    <TopText>{text.title}</TopText>
-                    <MediumText>{text.author}</MediumText>
-                    <Feather name="arrow-left" size={22} color="#fff"
-                        onPress={() => navigation.goBack()}
-                        style={{
-                            position: "absolute", top: 40, left: 16
-                        }} />
-                    <Feather name="share-2" size={22} color="#fff"
-                        style={{
-                            position: "absolute", top: 40, right: 30
-                        }} />
-                </TopBackground>
-                {show && (
-                    <DateTimePicker
-                        testID="dateTimePicker"
-                        value={date}
-                        mode={mode}
-                        minimumDate={new Date(today - 2592000000)}
-                        maximumDate={new Date(today + 259200000)}
-                        is24Hour={true}
-                        display="default"
-                        onChange={changeDate}
-                    />
-                )}
-            </HeaderContainer>
+                        <StatusBar style="light" />
+                        <TouchCalendar onPress={() => showDatePicker()}>
+                            <CalendarText>{date.toDateString()},</CalendarText>
+                        </TouchCalendar>
+                        <TopText>{text.title}</TopText>
+                        <MediumText>{text.author}</MediumText>
+                        <Feather name="arrow-left" size={22} color="#fff"
+                            onPress={() => navigation.goBack()}
+                            style={{
+                                position: "absolute", top: 40, left: 16
+                            }} />
+                        <Feather name="copy" size={22} color="#fff"
+                            style={{
+                                position: "absolute", top: 40, right: 70
+                            }} />
+                        <Feather name="share-2" size={22} color="#fff"
+                            style={{
+                                position: "absolute", top: 40, right: 30
+                            }} />
+                    </TopBackground>
+                    {show && (
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            value={date}
+                            mode={mode}
+                            minimumDate={new Date(today - 1728000000)}
+                            maximumDate={new Date(today + 172800000)}
+                            is24Hour={true}
+                            display="default"
+                            onChange={changeDate}
+                        />
+                    )}
+                </HeaderContainer>
 
-            <ReadingsContainer>
-                <LowerView>
-                    <InnerView>
-                        <ReadingBoldText>{text.subtitle}</ReadingBoldText>
-                        <VerseText>{text.verses}</VerseText>
-                    </InnerView>
-                    {
-                        text.message && text.message.map((text, index) => <InnerView key={index}>
-                            <Item text={text} />
+                <ReadingsContainer>
+                    <LowerView>
+                        <InnerView>
+                            <ReadingBoldText>{text.subtitle}</ReadingBoldText>
+                            <VerseText>{text.verses}</VerseText>
                         </InnerView>
-                        )
-                    }
-                </LowerView>
-            </ReadingsContainer>
+                        {
+                            text.message && text.message.map((text, index) => <InnerView key={index}>
+                                <Item text={text} />
+                            </InnerView>
+                            )
+                        }
+                    </LowerView>
+                </ReadingsContainer>
+            </PageView> : <Indicator />}
         </HomeScreenContainer>
     )
 }
