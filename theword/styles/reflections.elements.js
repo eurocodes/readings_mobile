@@ -76,7 +76,7 @@ flex: 1;
 
 export const FlatListView = styled.ScrollView`
 background-color: #cfd2da;
-padding: 20px 0;
+margin: 20px 0;
 `;
 
 export const ItemsWrapper = styled.View``;
@@ -144,4 +144,11 @@ justify-content: flex-start;
 text-align: justify;
 line-height: 26px;
 margin-top: 16px;
+`;
+
+// Videos
+export const VideoScreen = styled.SafeAreaView`
+flex: 1;
+background-color: #2e2e2e;
+justify-content: center;
 `;

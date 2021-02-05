@@ -3,7 +3,6 @@ import styled from "styled-components";
 export const HomeScreenContainer = styled.SafeAreaView`
 flex: 1;
 background-color: #cfcfcf;
-justify-content: center;
 `;
 
 export const HeaderContainer = styled.View`
@@ -12,6 +11,10 @@ border-bottom-right-radius: 65px;
 
 export const View = styled.View`
 padding: 5px;
+`;
+
+export const PageView = styled.View`
+flex: 1;
 `;
 
 export const DarkOverLayView = styled.View`
@@ -102,6 +105,11 @@ color: #0f0f0f;
 export const DrawerView = styled.View`
 flex: 1;
 padding: 8px;
+background-color: #263759;
+`;
+
+export const HeaderImage = styled.Image`
+width: 10px;
 `;
 
 export const ScrollContent = styled.View`
@@ -113,18 +121,17 @@ padding-left: 15px;
 `;
 
 export const TitleInner = styled.View`
-flex-direction: row;
 margin-top: 15px;
 `;
 
 export const HeaderLabel = styled.View`
 flex-direction: column;
-margin-left: 15px;
 `;
 
 export const Title = styled.Text`
-font-size: 16px;
+font-size: 26px;
 margin-top: 3px;
+color: #fff;
 font-weight: bold;
 `;
 
@@ -141,4 +148,13 @@ export const BottomDrawerSection = styled.View`
 margin-bottom: 15px;
 border-top-color: #f4f4f4;
 border-top-width: 1px;
+`;
+
+export const DrawerItemText = styled.Text`
+font-size: 18px;
+font-weight: normal;
+justify-content: flex-start;
+text-align: justify;
+color: #fff;
+line-height: 26px;
 `;

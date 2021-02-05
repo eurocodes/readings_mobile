@@ -17,6 +17,8 @@ import {
     ReflectionTextTitle,
     TextReflectionText
 } from '../styles/reflections.elements';
+import { PageView } from '../styles/home.elements';
+import { Indicator } from '../components/ActivityIndicator';
 
 const Item = ({ title, message }) => (
     <ViewText>
@@ -45,35 +47,36 @@ const ReflectionTextList = ({ navigation }) => {
     return (
         <ReflectionsContainer >
             <StatusBar style="light" backgroundColor="#263759" />
-            <HeaderContainer>
-                <HeaderContent>
-                    <Feather onPress={() => navigation.openDrawer()} name="menu" size={22} color="#fff" />
-                    <Feather name="share-2" size={22} color="#fff" />
-                </HeaderContent>
-                <HeaderTextContainer>
-                    <HeaderText>Read reflections fron few days ago</HeaderText>
-                </HeaderTextContainer>
-                {/* <ReflectionSearch>
+            {reflections[0] ? <PageView>
+                <HeaderContainer>
+                    <HeaderContent>
+                        <Feather onPress={() => navigation.openDrawer()} name="menu" size={22} color="#fff" />
+                        <Feather name="share-2" size={22} color="#fff" />
+                    </HeaderContent>
+                    <HeaderTextContainer>
+                        <HeaderText>Read reflections fron few days ago</HeaderText>
+                    </HeaderTextContainer>
+                    {/* <ReflectionSearch>
                     <Feather name="search" size={22} color="#fff" />
                 </ReflectionSearch> */}
-            </HeaderContainer>
-            <ScrollWrapper>
-                <FlatListView>
-                    {/* <FlatList
+                </HeaderContainer>
+                <ScrollWrapper>
+                    <FlatListView>
+                        {/* <FlatList
                     data={reflections}
                     renderItem={renderItem}
                     keyExtractor={item => String(item.id)}
                 /> */}
-                    {reflections.map((reflection) => <ItemsWrapper key={reflection.id}>
-                        <RenderTextView>
-                            <TouchableOpacity onPress={() => getSingleReflection(reflection.link)}>
-                                <Item title={reflection.title} message={reflection.message} />
-                            </TouchableOpacity>
-                        </RenderTextView>
-                    </ItemsWrapper>)}
-                </FlatListView>
-            </ScrollWrapper>
-
+                        {reflections.map((reflection) => <ItemsWrapper key={reflection.id}>
+                            <RenderTextView>
+                                <TouchableOpacity onPress={() => getSingleReflection(reflection.link)}>
+                                    <Item title={reflection.title} message={reflection.message} />
+                                </TouchableOpacity>
+                            </RenderTextView>
+                        </ItemsWrapper>)}
+                    </FlatListView>
+                </ScrollWrapper>
+            </PageView> : <Indicator />}
         </ReflectionsContainer>
     )
 }
