@@ -12,13 +12,15 @@ import {
     MediumText,
     ReadingBoldText,
     VerseText,
-    PageView
+    PageView,
+    ToastView
 } from '../styles/home.elements';
 import { TopBackground, LowerView, MessageText, View, InnerView } from '../styles/reflections.elements';
 import { fetchReflectionTextSingle } from '../apiCalls';
 import monstrance from '../assets/monstrance_host.jpg';
-import { Platform } from 'react-native';
+import { Alert, Clipboard, Platform, Share } from 'react-native';
 import { Indicator } from '../components/ActivityIndicator';
+import { Toast } from '../components/Toast';
 
 const Item = ({ text }) => (
     <MessageText>{text}</MessageText>
@@ -29,6 +31,7 @@ const ReflectionTextScreen = ({ route, navigation }) => {
     const [date, setDate] = useState(new Date())
     const [mode, setMode] = useState("date")
     const [show, setShow] = useState(false);
+    const [visibleToast, setVisibleToast] = useState(false);
     const today = new Date().getTime()
 
     const { url } = route.params;
@@ -44,7 +47,8 @@ const ReflectionTextScreen = ({ route, navigation }) => {
             setText(response)
         }
         fetchSingleText()
-    }, [])
+        setVisibleToast(false)
+    }, [visibleToast])
 
     const fetchSingleTextDated = async (date) => {
         let day = date.getDate();
@@ -83,6 +87,44 @@ const ReflectionTextScreen = ({ route, navigation }) => {
         showMode("date");
     }
 
+    const copyText = () => {
+        setVisibleToast(true);
+        const reflections = copiedReflections(text.message)
+        Clipboard.setString(text.title + "\n" + text.author + "\n" + "\n" +
+            text.subtitle + "\n" + "\n" + text.verses + "\n" + "\n" + reflections)
+    }
+
+    const copiedReflections = (text) => {
+        const reflectionArr = [];
+        for (let i = 0; i < text.length; i++) {
+            reflectionArr.push(text[i] + "\n" + "\n");
+        }
+
+        return reflectionArr;
+    }
+
+    const onShare = async () => {
+        const reflections = copiedReflections(text.message)
+        try {
+            const result = await Share.share({
+                message: text.title + "\n" + text.author + "\n" + "\n" +
+                    text.subtitle + "\n" + "\n" + text.verses + "\n" + "\n" + reflections + "\n" + "\n" +
+                    "Download daily readings and reflections App from \n \n https://expo.io/@emmanuelum/theword",
+            });
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    console.log("Shared with actitvity type of " + result.activityType)
+                } else {
+                    console.log("Shared")
+                }
+            } else if (result.action === Share.dismissedAction) {
+                console.log("Dismissed")
+            }
+        } catch (error) {
+            Alert.alert(error.message)
+        }
+    }
+
     return (
         <HomeScreenContainer >
             {text.message ? <PageView>
@@ -90,7 +132,7 @@ const ReflectionTextScreen = ({ route, navigation }) => {
                     <TopBackground
                     >
 
-                        <StatusBar style="light" />
+                        <StatusBar style="light" backgroundColor="#263759" />
                         <TouchCalendar onPress={() => showDatePicker()}>
                             <CalendarText>{date.toDateString()},</CalendarText>
                         </TouchCalendar>
@@ -102,10 +144,12 @@ const ReflectionTextScreen = ({ route, navigation }) => {
                                 position: "absolute", top: 40, left: 16
                             }} />
                         <Feather name="copy" size={22} color="#fff"
+                            onPress={() => copyText()}
                             style={{
                                 position: "absolute", top: 40, right: 70
                             }} />
                         <Feather name="share-2" size={22} color="#fff"
+                            onPress={onShare}
                             style={{
                                 position: "absolute", top: 40, right: 30
                             }} />
@@ -115,8 +159,8 @@ const ReflectionTextScreen = ({ route, navigation }) => {
                             testID="dateTimePicker"
                             value={date}
                             mode={mode}
-                            minimumDate={new Date(today - 1728000000)}
-                            maximumDate={new Date(today + 172800000)}
+                            minimumDate={new Date(today - 1728000000 * 1.2)}
+                            maximumDate={new Date(today)}
                             is24Hour={true}
                             display="default"
                             onChange={changeDate}
@@ -136,8 +180,13 @@ const ReflectionTextScreen = ({ route, navigation }) => {
                             </InnerView>
                             )
                         }
+                        <ReadingBoldText>Catholic Diocese of Wichita</ReadingBoldText>
+
                     </LowerView>
                 </ReadingsContainer>
+                <ToastView>
+                    <Toast visible={visibleToast} message="Text copied to clipboard" />
+                </ToastView>
             </PageView> : <Indicator />}
         </HomeScreenContainer>
     )

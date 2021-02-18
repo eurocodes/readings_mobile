@@ -9,11 +9,13 @@ export const HeaderContainer = styled.View`
 border-bottom-right-radius: 65px;
 `;
 
+export const ScrollView = styled.ScrollView``;
+
 export const View = styled.View`
 padding: 5px;
 `;
 
-export const PageView = styled.View`
+export const PageView = styled.ScrollView`
 flex: 1;
 `;
 
@@ -37,14 +39,15 @@ margin-top: 15px;
 `;
 
 export const ReadingsContainer = styled.ScrollView`
+flex: 1;
 background-color: #cfcfcf;
 `;
 
 export const Text = styled.Text`
-font-size: 16px;
-/* padding: 0 14px 0 14px; */
+font-size: 18px;
+color: #3f2147;
+padding: 0 14px 0 14px;
 font-weight: normal;
-opacity: 0.3;
 justify-content: flex-start;
 text-align: justify;
 line-height: 26px;
@@ -86,7 +89,20 @@ color: #aaa;
 
 export const ReadingBoldText = styled.Text`
 font-size: 25px;
+padding: 0 14px 0 14px;
 font-weight: bold;
+`;
+
+export const FooterBoldText = styled.Text`
+font-size: 20px;
+color: #4a2a2a;
+text-align: center;
+font-weight: bold;
+`;
+
+export const ToastView = styled.View`
+background-color: #000;
+opacity: 0.3;
 `;
 
 export const FlatList = styled.FlatList`
@@ -97,8 +113,22 @@ export const FlexView = styled.View`
 
 export const VerseText = styled.Text`
 font-size: 18px;
+padding: 0 14px 0 14px;
 font-weight: 400;
 color: #0f0f0f;
+`;
+
+// Psalm wrapper
+export const PsalmView = styled.View``;
+
+export const ResponseText = styled.Text`
+font-size: 18px;
+color: #3f2147;
+padding: 0 14px 0 14px;
+font-weight: bold;
+justify-content: flex-start;
+text-align: justify;
+line-height: 26px;
 `;
 
 // Drawer elements
@@ -157,4 +187,41 @@ justify-content: flex-start;
 text-align: justify;
 color: #fff;
 line-height: 26px;
+`;
+
+// About Page
+
+export const AboutBackground = styled.SafeAreaView`
+flex: 1;
+`;
+
+export const ScrollAbout = styled.ScrollView`
+background-color: #263759;
+`;
+
+export const AboutImage = styled.Image`
+margin: 120px 0 80px 0;
+justify-content: center;
+`;
+
+export const AboutView = styled.View`
+align-items: center;
+margin-top: 20px;
+`;
+
+export const AboutInnerView = styled.View`
+flex-direction: row;
+justify-content: space-between;
+margin: 100px 0;
+`;
+
+export const AboutInnerText = styled.Text`
+font-size: 18px;
+font-weight: bold;
+justify-content: flex-start;
+text-align: center;
+color: #fff;
+line-height: 26px;
+margin-bottom: 20px;
+padding: 0 15px;
 `;

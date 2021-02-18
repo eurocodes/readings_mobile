@@ -10,7 +10,24 @@ export const getReadings = () => {
 
 export const fetchReadings = async (date) => {
     try {
-        const response = await fetch(`http://192.168.8.101:8000/mass-readings/${date}`)
+        const response = await fetch(`https://readings-by-ugo.herokuapp.com/mass-readings/${date}`)
+
+        if (response.status == 200) {
+            const result = await response.json();
+            return result;
+        }
+    } catch (err) {
+        console.log("Error:", err)
+    }
+
+}
+
+export const fetchReadingsSpecial = async (link) => {
+    const identifier = link;
+    let id = identifier.split("/");
+    id = id.slice(3,);
+    try {
+        const response = await fetch(`https://readings-by-ugo.herokuapp.com/readings/special/${id}`)
 
         if (response.status == 200) {
             const result = await response.json();
@@ -24,11 +41,10 @@ export const fetchReadings = async (date) => {
 
 export const fetchReflections = async () => {
     try {
-        const response = await fetch("http://192.168.8.101:8000/reflections/list")
+        const response = await fetch("https://readings-by-ugo.herokuapp.com/reflections/list")
 
         if (response.status == 200) {
             const result = await response.json();
-            console.log("Count:", result.length)
             return result;
         }
     } catch (err) {
@@ -40,11 +56,10 @@ export const fetchReflections = async () => {
 export const fetchYoutubeId = async (link) => {
 
     try {
-        const response = await fetch(`http://192.168.8.101:8000/vid${link}`)
+        const response = await fetch(`https://readings-by-ugo.herokuapp.com/vid${link}`)
 
         if (response.status == 200) {
             const result = await response.json();
-            console.log(result)
             return result.youtubeId;
         }
     } catch (err) {
@@ -56,7 +71,7 @@ export const fetchYoutubeId = async (link) => {
 
 export const fetchReflectionTextList = async () => {
     try {
-        const response = await fetch("http://192.168.8.101:8000/reflections/text/list")
+        const response = await fetch("https://readings-by-ugo.herokuapp.com/reflections/text/list")
 
         if (response.status == 200) {
             const result = await response.json();
@@ -70,7 +85,7 @@ export const fetchReflectionTextList = async () => {
 
 export const fetchReflectionTextSingle = async (url, date) => {
     try {
-        const response = await fetch(`http://192.168.8.101:8000/reflections/text/single/${date}`, {
+        const response = await fetch(`https://readings-by-ugo.herokuapp.com/reflections/text/single/${date}`, {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ url })
@@ -79,6 +94,21 @@ export const fetchReflectionTextSingle = async (url, date) => {
         if (response.status == 200) {
             const result = await response.json();
             // console.log("Resp Always:", result)
+            return result;
+        }
+    } catch (err) {
+        console.log("Error:", err)
+    }
+
+}
+
+// Get site details
+export const fetchDetailsFromSite = async () => {
+    try {
+        const response = await fetch("https://readings-by-ugo.herokuapp.com/about")
+
+        if (response.status == 200) {
+            const result = await response.json();
             return result;
         }
     } catch (err) {

@@ -3,10 +3,9 @@
     "name": "theword",
     "slug": "theword",
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/appLogo-3.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/appLogo-2.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -27,6 +26,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": ""
   }
 }

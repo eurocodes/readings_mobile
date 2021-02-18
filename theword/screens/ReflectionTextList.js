@@ -40,7 +40,6 @@ const ReflectionTextList = ({ navigation }) => {
     }, [])
 
     const getSingleReflection = async (link) => {
-        console.log(link)
         navigation.navigate("Single Reflection", { url: link })
     }
 
@@ -51,7 +50,7 @@ const ReflectionTextList = ({ navigation }) => {
                 <HeaderContainer>
                     <HeaderContent>
                         <Feather onPress={() => navigation.openDrawer()} name="menu" size={22} color="#fff" />
-                        <Feather name="share-2" size={22} color="#fff" />
+                        {/* <Feather name="share-2" size={22} color="#fff" /> */}
                     </HeaderContent>
                     <HeaderTextContainer>
                         <HeaderText>Read reflections fron few days ago</HeaderText>

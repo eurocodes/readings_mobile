@@ -14,15 +14,21 @@ import {
     MediumText,
     View,
     ReadingBoldText,
-    FlatList,
     PageView,
-    VerseText
+    VerseText,
+    ToastView,
+    PsalmView,
+    ResponseText
 } from '../styles/home.elements';
 import { fetchReadings, getReadings } from '../apiCalls';
 import churchWall from '../assets/church-wall-1.jpg';
 import monstrance from '../assets/monstrance_host.jpg';
-import { Platform, } from 'react-native';
+import { Platform, Clipboard, Share, Alert } from 'react-native';
 import { Indicator } from "../components/ActivityIndicator";
+import { TouchableOpacity } from '../styles/home.elements';
+import { fetchReadingsSpecial } from '../apiCalls';
+import { FooterBoldText } from '../styles/home.elements';
+import { Toast } from '../components/Toast';
 
 const imageUri = "https://images.pexels.com/photos/227417/pexels-photo-227417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940";
 
@@ -30,7 +36,38 @@ const Item = ({ title, verse, text }) => (
     <View>
         <ReadingBoldText>{title}</ReadingBoldText>
         <VerseText>{verse}</VerseText>
-        <Text>{text}</Text>
+        {
+            // Renders responsorial psalm and alleluia verses differently
+                title.toUpperCase() === "RESPONSORIAL PSALM"? <PsalmView>
+                {
+                text.split("\n").map((a, i) =>
+                    text.split("\n")[0].replace(/\s\s+/g, "").split(")")[1] ===  a.replace(/\s\s+/g, "").split("R.")[1]
+                    ? <ResponseText key={i}>{a.replace(/\s\s+/g, "")}</ResponseText> : 
+                    text.split("\n")[0] == a ? <ResponseText key={i}>{a.replace(/\s\s+/g, "")}</ResponseText> :
+                    text.split("\n")[0].replace(/\s\s+/g, "").split(")")[1].trim() ===  a.replace(/\s\s+/g, "").split("R.")[1]
+                    ? <ResponseText key={i}>{a.replace(/\s\s+/g, "")}</ResponseText> : 
+                    <Text key={i}>{a.replace(/\s\s+/g, "")}</Text>
+                )
+                }
+                </PsalmView>
+                :  title.toUpperCase() === "ALLELUIA"? <PsalmView>
+                {
+                text.split("\n").map((a, i) => 
+                    a.replace(/\s\s+/g, "") === text.split("\n")[0].replace(/\s\s+/g, "")
+                    ? <ResponseText key={i}>{a.replace(/\s\s+/g, "")}</ResponseText> : 
+                    <Text key={i}>{a.replace(/\s\s+/g, "")}</Text>
+                )
+                }
+                </PsalmView>
+                : <Text>{text}</Text>
+        }
+        {/* <Text>{text}</Text> */}
+    </View>
+);
+
+const ItemSpecialDays = ({ text }) => (
+    <View>
+        <ReadingBoldText>{text}</ReadingBoldText>
     </View>
 );
 
@@ -40,6 +77,7 @@ const HomeScreen = ({ navigation }) => {
     const [mode, setMode] = useState("date")
     const [show, setShow] = useState(false)
     const [copiedText, setCopiedText] = useState("")
+    const [visibleToast, setVisibleToast] = useState(false);
     useEffect(() => {
         const fetchText = async () => {
             let day = date.getDate();
@@ -60,7 +98,14 @@ const HomeScreen = ({ navigation }) => {
             setText(response)
         }
         fetchText()
-    }, [date])
+        setVisibleToast(false)
+    }, [date, visibleToast])
+
+    // Get readings manually
+    const getReadingsSpecialDays = async (link) => {
+        const response = await fetchReadingsSpecial(link)
+        setText(response)
+    }
 
     const changeDate = (selectedDate) => {
         const currentDate = selectedDate.nativeEvent.timestamp || date;
@@ -77,11 +122,47 @@ const HomeScreen = ({ navigation }) => {
         showMode("date");
     }
 
-    const renderItem = ({ item }) => (
-        <View>
-            <Item title={item.title} verse={item.verse} text={item.text} />
-        </View>
-    );
+    const copyToClipboard = () => {
+        setVisibleToast(true);
+        let allReading = copiedReadings(text.text)
+        Clipboard.setString(text.title.toUpperCase() + "\n" + text.lectionary + "\n" + "\n" + allReading)
+
+    }
+
+    const copiedReadings = (text) => {
+        const reading = []
+        for (let i = 0; i < text.length; i++) {
+            reading.push(text[i].title + ": " + text[i].verse + "\n" + "\n");
+            reading.push(text[i].text.replace(/\s\s+/g, "") + "\n" + "\n");
+        }
+        return reading;
+    }
+
+    const onShare = async () => {
+        const allReading = copiedReadings(text.text)
+        try {
+            const result = await Share.share({
+                message: text.title.toUpperCase() + "\n" + text.lectionary + "\n" + "\n" + allReading + "\n" + "\n" +
+                    "Download daily readings and reflections App from \n \n https://expo.io/@emmanuelum/theword",
+            });
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    console.log("Shared with actitvity type of" + result.activityType)
+                } else {
+                    Alert.alert("Shared")
+                }
+            } else if (result.action === Share.dismissedAction) {
+                console.log("Dismissed")
+            }
+        } catch (error) {
+            Alert.alert(error.message)
+        }
+    }
+
+    // const fetchCopiedText = async () => {
+    //     const text = await Clipboard.getString()
+    //     setCopiedText(text);
+    // }
 
     return (
         <HomeScreenContainer >
@@ -92,10 +173,10 @@ const HomeScreen = ({ navigation }) => {
                         imageStyle={{ borderBottomRightRadius: 65 }}
                     >
 
-                        <StatusBar style="light" />
+                        <StatusBar style="light" backgroundColor="#141414" />
                         <DarkOverLayView></DarkOverLayView>
                         <TouchCalendar onPress={() => showDatePicker()}>
-                            <CalendarText>{date.toDateString()},</CalendarText>
+                            <CalendarText>{date.toDateString()}</CalendarText>
                         </TouchCalendar>
                         <TopText>{text.title}</TopText>
                         <MediumText>{text.lectionary}</MediumText>
@@ -105,11 +186,12 @@ const HomeScreen = ({ navigation }) => {
                                 position: "absolute", top: 40, left: 16
                             }} />
                         <Feather name="copy" size={22} color="#fff"
-                            onPress={() => { }}
+                            onPress={() => copyToClipboard()}
                             style={{
                                 position: "absolute", top: 40, right: 70
                             }} />
                         <Feather name="share-2" size={22} color="#fff"
+                            onPress={onShare}
                             style={{
                                 position: "absolute", top: 40, right: 30
                             }} />
@@ -127,12 +209,20 @@ const HomeScreen = ({ navigation }) => {
                 </HeaderContainer>
 
                 <ReadingsContainer>
-                    <View>
-                        <FlatList
-                            data={text.text}
-                            renderItem={renderItem}
-                            keyExtractor={item => String(item.id)} />
-                    </View>
+                    {text.text[0].title ? text.text.map((item) => <View key={item.id}>
+                        <Item title={item.title} verse={item.verse} text={item.text} />
+                    </View>) :
+                        text.text.map((item) => <View key={item.id}>
+                            <TouchableOpacity
+                                onPress={() => getReadingsSpecialDays(item.link)}
+                            >
+                                <ItemSpecialDays text={item.text} />
+                            </TouchableOpacity>
+                        </View>)}
+                    <ToastView>
+                        <Toast visible={visibleToast} message="Text copied to clipboard" />
+                    </ToastView>
+                    <FooterBoldText>{text.ref}</FooterBoldText>
                 </ReadingsContainer>
             </PageView> : <Indicator />}
         </HomeScreenContainer>

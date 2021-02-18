@@ -7,6 +7,7 @@ import VideoFrame from './VideoFrame';
 import ReflectionTextList from './ReflectionTextList';
 import ReflectionTextScreen from './ReflectionTextScreen';
 import SplashScreen from './SplashScreen';
+import AboutScreen from './AboutScreen';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,7 @@ const StackScreens = () => {
             <Stack.Screen name="Reflection Video" component={VideoFrame} />
             <Stack.Screen name="Daily Reflection Text" component={ReflectionTextList} />
             <Stack.Screen name="Single Reflection" component={ReflectionTextScreen} />
+            <Stack.Screen name="About us" component={AboutScreen} />
             <Stack.Screen name="Splash" component={SplashScreen} />
         </Stack.Navigator>
     )
