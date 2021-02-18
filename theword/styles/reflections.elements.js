@@ -137,9 +137,9 @@ align-items: center;
 `;
 
 export const MessageText = styled.Text`
-font-size: 16px;
+font-size: 18px;
 font-weight: normal;
-opacity: 0.3;
+color: #3f2147;
 justify-content: flex-start;
 text-align: justify;
 line-height: 26px;

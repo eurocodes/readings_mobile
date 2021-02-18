@@ -12,10 +12,10 @@ import {
     HeaderText,
     ReflectionSearch,
     RenderListView,
-    FlatListView,
     LineBreaker,
     ItemsWrapper,
-    ScrollWrapper
+    ScrollWrapper,
+    FlatList
 } from '../styles/reflections.elements';
 import { PageView } from '../styles/home.elements';
 import { Indicator } from '../components/ActivityIndicator';
@@ -43,6 +43,18 @@ const ReflectionScreen = ({ navigation }) => {
         navigation.navigate("Reflection Video", { id: response })
     }
 
+    const renderItem = ({ item }) => (
+        <ItemsWrapper>
+            <RenderListView>
+                <Item title={item.title} />
+                <TouchableOpacity onPress={() => getFrame(item.link)}>
+                    <Feather name="eye" size={25} color="#0f2147" />
+                </TouchableOpacity>
+            </RenderListView>
+            <LineBreaker />
+        </ItemsWrapper>
+    );
+
     return (
         <ReflectionsContainer >
             <StatusBar style="light" backgroundColor="#263759" />
@@ -50,7 +62,6 @@ const ReflectionScreen = ({ navigation }) => {
                 <HeaderContainer>
                     <HeaderContent>
                         <Feather onPress={() => navigation.openDrawer()} name="menu" size={22} color="#fff" />
-                        <Feather name="share-2" size={22} color="#fff" />
                     </HeaderContent>
                     <HeaderTextContainer>
                         <HeaderText>Reflectional Videos from few days ago</HeaderText>
@@ -60,17 +71,10 @@ const ReflectionScreen = ({ navigation }) => {
                 </ReflectionSearch> */}
                 </HeaderContainer>
                 <ScrollWrapper>
-                    <FlatListView>
-                        {reflections.map((reflection) => <ItemsWrapper key={reflection.id}>
-                            <RenderListView>
-                                <Item title={reflection.title} />
-                                <TouchableOpacity onPress={() => getFrame(reflection.link)}>
-                                    <Feather name="eye" size={25} color="#0f2147" />
-                                </TouchableOpacity>
-                            </RenderListView>
-                            <LineBreaker />
-                        </ItemsWrapper>)}
-                    </FlatListView>
+                    <FlatList
+                        data={reflections}
+                        renderItem={renderItem}
+                        keyExtractor={item => String(item.id)} />
                 </ScrollWrapper>
             </PageView> : <Indicator />}
         </ReflectionsContainer>

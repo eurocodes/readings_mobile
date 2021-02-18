@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Share, Alert } from 'react-native'
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer'
 import { Feather } from '@expo/vector-icons';
 import {
@@ -16,6 +17,25 @@ import {
 } from '../styles/home.elements';
 
 export default function DrawerContent(props) {
+
+    const onShare = async () => {
+        try {
+            const result = await Share.share({
+                message: "Download daily readings and reflections App from \n \n https://expo.io/@emmanuelum/theword",
+            });
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // console.log("Shared with actitvity type of" + result.activityType)
+                } else {
+                    // Alert.alert("Shared")
+                }
+            } else if (result.action === Share.dismissedAction) {
+                console.log("Dismissed")
+            }
+        } catch (error) {
+            Alert.alert(error.message)
+        }
+    }
 
     return (
         <DrawerView>
@@ -59,6 +79,13 @@ export default function DrawerContent(props) {
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
+                                <Feather name="info" color="#fff" size={size} />
+                            )}
+                            label={() => <DrawerItemText>About us</DrawerItemText>}
+                            onPress={() => { props.navigation.navigate("About us") }}
+                        />
+                        <DrawerItem
+                            icon={({ color, size }) => (
                                 <Feather name="star" color="#fff" size={size} />
                             )}
                             label={() => <DrawerItemText>Rate this App</DrawerItemText>}
@@ -69,7 +96,7 @@ export default function DrawerContent(props) {
                                 <Feather name="share-2" color="#fff" size={size} />
                             )}
                             label={() => <DrawerItemText>Share this App</DrawerItemText>}
-                            onPress={() => { }}
+                            onPress={onShare}
                         />
                     </DrawerSection>
                 </ScrollContent>

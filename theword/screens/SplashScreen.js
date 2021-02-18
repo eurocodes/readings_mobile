@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import { View, Text, Image } from 'react-native'
-import logo from "../assets/theword-logo.png";
+import logo from "../assets/logo-2.png";
 
 const SplashScreen = ({ navigation }) => {
 
     useEffect(() => {
         setTimeout(() => {
             navigation.navigate("Daily Readings")
-        }, 5000)
+        }, 3000)
     }, [])
     return (
         <View style={{
