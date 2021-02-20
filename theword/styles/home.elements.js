@@ -139,7 +139,9 @@ background-color: #263759;
 `;
 
 export const HeaderImage = styled.Image`
-width: 10px;
+width: 120px;
+height: 120px;
+align-self: center;
 `;
 
 export const ScrollContent = styled.View`
@@ -147,7 +149,7 @@ flex: 1;
 `;
 
 export const TitleWrapper = styled.View`
-padding-left: 15px;
+padding: 0 15px;
 `;
 
 export const TitleInner = styled.View`
@@ -162,6 +164,7 @@ export const Title = styled.Text`
 font-size: 26px;
 margin-top: 3px;
 color: #fff;
+text-align: center;
 font-weight: bold;
 `;
 

@@ -15,6 +15,7 @@ import {
     BottomDrawerSection,
     DrawerItemText,
 } from '../styles/home.elements';
+import logo_3 from "../assets/appLogo-3.png";
 
 export default function DrawerContent(props) {
 
@@ -43,14 +44,12 @@ export default function DrawerContent(props) {
                 <ScrollContent>
                     <TitleWrapper>
                         <TitleInner>
-                            {/* <HeaderImage
-                                source={{
-                                    uri: "https://p.kindpng.com/picc/s/78-785827_user-profile-avatar-login-account-male-user-icon.png"
-                                }}
-                                size={5}
-                            /> */}
+                            <HeaderImage
+                                source={logo_3}
+                                imageStyle={{ resizeMode: "contain" }}
+                            />
                             <HeaderLabel>
-                                <Title>Daily {"\n"}Readings {"\n"}with Reflections</Title>
+                                <Title>Daily Readings with Reflections</Title>
                             </HeaderLabel>
                         </TitleInner>
                     </TitleWrapper>

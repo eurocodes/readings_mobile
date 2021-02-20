@@ -15,15 +15,17 @@ import {
     RenderTextView,
     ViewText,
     ReflectionTextTitle,
-    TextReflectionText
+    TextReflectionText,
+    PageView
 } from '../styles/reflections.elements';
-import { PageView } from '../styles/home.elements';
 import { Indicator } from '../components/ActivityIndicator';
 
-const Item = ({ title, message }) => (
+const Item = ({ title, message, onPress, link }) => (
     <ViewText>
         <ReflectionTextTitle>{title}</ReflectionTextTitle>
-        <TextReflectionText>{message}</TextReflectionText>
+        <TouchableOpacity onPress={() => onPress(link)}>
+            <TextReflectionText>{message}</TextReflectionText>
+        </TouchableOpacity>
     </ViewText>
 );
 
@@ -53,7 +55,7 @@ const ReflectionTextList = ({ navigation }) => {
                         {/* <Feather name="share-2" size={22} color="#fff" /> */}
                     </HeaderContent>
                     <HeaderTextContainer>
-                        <HeaderText>Read reflections fron few days ago</HeaderText>
+                        <HeaderText>Daily reflections</HeaderText>
                     </HeaderTextContainer>
                     {/* <ReflectionSearch>
                     <Feather name="search" size={22} color="#fff" />
@@ -68,9 +70,12 @@ const ReflectionTextList = ({ navigation }) => {
                 /> */}
                         {reflections.map((reflection) => <ItemsWrapper key={reflection.id}>
                             <RenderTextView>
-                                <TouchableOpacity onPress={() => getSingleReflection(reflection.link)}>
-                                    <Item title={reflection.title} message={reflection.message} />
-                                </TouchableOpacity>
+                                <Item
+                                    title={reflection.title}
+                                    message={reflection.message}
+                                    onPress={getSingleReflection}
+                                    link={reflection.link}
+                                />
                             </RenderTextView>
                         </ItemsWrapper>)}
                     </FlatListView>

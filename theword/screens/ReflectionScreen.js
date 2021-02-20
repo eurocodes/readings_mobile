@@ -15,13 +15,14 @@ import {
     LineBreaker,
     ItemsWrapper,
     ScrollWrapper,
-    FlatList
+    FlatList, PageView,
+    ListDateText
 } from '../styles/reflections.elements';
-import { PageView } from '../styles/home.elements';
 import { Indicator } from '../components/ActivityIndicator';
 
-const Item = ({ title, link }) => (
+const Item = ({ title, date }) => (
     <View>
+        <ListDateText>{date}</ListDateText>
         <Text>{title}</Text>
     </View>
 );
@@ -46,7 +47,7 @@ const ReflectionScreen = ({ navigation }) => {
     const renderItem = ({ item }) => (
         <ItemsWrapper>
             <RenderListView>
-                <Item title={item.title} />
+                <Item title={item.title} date={item.date} />
                 <TouchableOpacity onPress={() => getFrame(item.link)}>
                     <Feather name="eye" size={25} color="#0f2147" />
                 </TouchableOpacity>
@@ -64,7 +65,7 @@ const ReflectionScreen = ({ navigation }) => {
                         <Feather onPress={() => navigation.openDrawer()} name="menu" size={22} color="#fff" />
                     </HeaderContent>
                     <HeaderTextContainer>
-                        <HeaderText>Reflectional Videos from few days ago</HeaderText>
+                        <HeaderText>Daily Reflections Videos</HeaderText>
                     </HeaderTextContainer>
                     {/* <ReflectionSearch>
                     <Feather name="search" size={22} color="#fff" />

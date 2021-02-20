@@ -45,6 +45,17 @@ export const fetchReflections = async () => {
 
         if (response.status == 200) {
             const result = await response.json();
+            let dateStr = result[0].title;
+            dateStr = dateStr.split(" ");
+            const year = dateStr[0];
+            const month = parseInt(dateStr[1]) - 1;
+            const day = dateStr[2]
+            const topDate = new Date(new Date(year, month, day).getTime())
+            let date = topDate;
+            for (let i = 0; i <= result.length - 1; i++) {
+                result[i].date = date.toDateString();
+                date = new Date(date.getTime() - 86400000)
+            }
             return result;
         }
     } catch (err) {

@@ -30,36 +30,34 @@ import { fetchReadingsSpecial } from '../apiCalls';
 import { FooterBoldText } from '../styles/home.elements';
 import { Toast } from '../components/Toast';
 
-const imageUri = "https://images.pexels.com/photos/227417/pexels-photo-227417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940";
-
 const Item = ({ title, verse, text }) => (
     <View>
         <ReadingBoldText>{title}</ReadingBoldText>
         <VerseText>{verse}</VerseText>
         {
             // Renders responsorial psalm and alleluia verses differently
-                title.toUpperCase() === "RESPONSORIAL PSALM"? <PsalmView>
+            title.toUpperCase() === "RESPONSORIAL PSALM" ? <PsalmView>
                 {
-                text.split("\n").map((a, i) =>
-                    text.split("\n")[0].replace(/\s\s+/g, "").split(")")[1] ===  a.replace(/\s\s+/g, "").split("R.")[1]
-                    ? <ResponseText key={i}>{a.replace(/\s\s+/g, "")}</ResponseText> : 
-                    text.split("\n")[0] == a ? <ResponseText key={i}>{a.replace(/\s\s+/g, "")}</ResponseText> :
-                    text.split("\n")[0].replace(/\s\s+/g, "").split(")")[1].trim() ===  a.replace(/\s\s+/g, "").split("R.")[1]
-                    ? <ResponseText key={i}>{a.replace(/\s\s+/g, "")}</ResponseText> : 
-                    <Text key={i}>{a.replace(/\s\s+/g, "")}</Text>
-                )
+                    text.split("\n").map((a, i) =>
+                        text.split("\n")[0].replace(/\s\s+/g, "").split(")")[1] === a.replace(/\s\s+/g, "").split("R.")[1]
+                            ? <ResponseText key={i}>{a.replace(/\s\s+/g, "")}</ResponseText> :
+                            text.split("\n")[0] == a ? <ResponseText key={i}>{a.replace(/\s\s+/g, "")}</ResponseText> :
+                                text.split("\n")[0].replace(/\s\s+/g, "").split(")")[1].trim() === a.replace(/\s\s+/g, "").split("R.")[1]
+                                    ? <ResponseText key={i}>{a.replace(/\s\s+/g, "")}</ResponseText> :
+                                    <Text key={i}>{a.replace(/\s\s+/g, "")}</Text>
+                    )
                 }
+            </PsalmView>
+                : title.toUpperCase() === "ALLELUIA" ? <PsalmView>
+                    {
+                        text.split("\n").map((a, i) =>
+                            a.replace(/\s\s+/g, "") === text.split("\n")[0].replace(/\s\s+/g, "")
+                                ? <ResponseText key={i}>{a.replace(/\s\s+/g, "")}</ResponseText> :
+                                <Text key={i}>{a.replace(/\s\s+/g, "")}</Text>
+                        )
+                    }
                 </PsalmView>
-                :  title.toUpperCase() === "ALLELUIA"? <PsalmView>
-                {
-                text.split("\n").map((a, i) => 
-                    a.replace(/\s\s+/g, "") === text.split("\n")[0].replace(/\s\s+/g, "")
-                    ? <ResponseText key={i}>{a.replace(/\s\s+/g, "")}</ResponseText> : 
-                    <Text key={i}>{a.replace(/\s\s+/g, "")}</Text>
-                )
-                }
-                </PsalmView>
-                : <Text>{text}</Text>
+                    : <Text>{text}</Text>
         }
         {/* <Text>{text}</Text> */}
     </View>

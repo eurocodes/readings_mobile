@@ -10,6 +10,9 @@ export const ReflectionsContainer = styled.SafeAreaView`
 flex: 1;
 background-color: #cfd2da;
 `;
+export const PageView = styled.View`
+flex: 1;
+`;
 
 export const HeaderContainer = styled.View`
 padding-top: 40px;
@@ -56,11 +59,19 @@ font-weight: bold;
 text-transform: uppercase;
 color: #0f2147;
 `;
+
+export const ListDateText = styled.Text`
+font-size: 18px;
+font-weight: bold;
+color: #5f2147;
+`;
+
 export const FlatList = styled.FlatList``;
 export const TouchableOpacity = styled.TouchableOpacity`
+justify-content: center;
 border-radius: 15px;
 background-color: #f8f7f0;
-padding: 10px 14px;
+padding: 10px 20px;
 `;
 
 export const RenderListView = styled.View`
@@ -91,12 +102,12 @@ border-width: 1px;
 
 export const RenderTextView = styled.View`
 margin: 4px 2px;
-padding: 2px 14px;
+padding: 2px 10px;
 `;
 
 export const ViewText = styled.View`
 border-radius: 15px;
-padding: 10px;
+padding: 5px;
 `;
 
 export const ReflectionTextTitle = styled.Text`

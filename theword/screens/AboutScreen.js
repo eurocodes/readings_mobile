@@ -25,10 +25,10 @@ const AboutScreen = ({ navigation }) => {
             const response = await fetchDetailsFromSite()
             const email = response.email.split(":")[1];
             setDetails(response)
-            console.log(details)
         }
         getDetails();
-    }, []);
+        setVisibleToast(false)
+    }, [visibleToast]);
 
     const copyToClipboard = () => {
         setVisibleToast(true);
@@ -63,8 +63,8 @@ const AboutScreen = ({ navigation }) => {
                 <AboutInnerText>{details.message}</AboutInnerText>
             </AboutView>: <Indicator />}
             <ToastView>
-                        <Toast visible={visibleToast} message="Text copied to clipboard" />
-                    </ToastView>
+                <Toast visible={visibleToast} message="Email copied to clipboard" />
+            </ToastView>
 
             </ScrollAbout>
         </AboutBackground>
