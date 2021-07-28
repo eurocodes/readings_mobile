@@ -46,7 +46,7 @@ background-color: #cfcfcf;
 export const Text = styled.Text`
 font-size: 18px;
 color: #3f2147;
-padding: 0 14px 0 14px;
+padding: 0 5px 0 5px;
 font-weight: normal;
 justify-content: flex-start;
 text-align: justify;
@@ -89,15 +89,16 @@ color: #aaa;
 
 export const ReadingBoldText = styled.Text`
 font-size: 25px;
-padding: 0 14px 0 14px;
+padding: 0 5px 0 5px;
 font-weight: bold;
 `;
 
-export const FooterBoldText = styled.Text`
-font-size: 20px;
+export const FooterText = styled.Text`
+font-size: 15px;
 color: #4a2a2a;
-text-align: center;
-font-weight: bold;
+text-align: right;
+padding-right: 14px;
+font-weight: normal;
 `;
 
 export const ToastView = styled.View`
@@ -113,7 +114,7 @@ export const FlexView = styled.View`
 
 export const VerseText = styled.Text`
 font-size: 18px;
-padding: 0 14px 0 14px;
+padding: 0 5px 0 5px;
 font-weight: 400;
 color: #0f0f0f;
 `;
@@ -124,7 +125,7 @@ export const PsalmView = styled.View``;
 export const ResponseText = styled.Text`
 font-size: 18px;
 color: #3f2147;
-padding: 0 14px 0 14px;
+padding: 0 5px 0 5px;
 font-weight: bold;
 justify-content: flex-start;
 text-align: justify;
@@ -227,4 +228,9 @@ color: #fff;
 line-height: 26px;
 margin-bottom: 20px;
 padding: 0 15px;
+`;
+
+// Ad View
+export const AddViewWrap = styled.View`
+height: ${props => props.height};
 `;

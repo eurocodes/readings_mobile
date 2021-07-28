@@ -40,7 +40,9 @@ const ReflectionScreen = ({ navigation }) => {
     }, [])
 
     const getFrame = async (link) => {
+        console.log("Link:", link)
         const response = await fetchYoutubeId(link)
+        console.log("ID:", response)
         navigation.navigate("Reflection Video", { id: response })
     }
 

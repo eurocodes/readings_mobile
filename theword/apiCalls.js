@@ -14,6 +14,9 @@ export const fetchReadings = async (date) => {
 
         if (response.status == 200) {
             const result = await response.json();
+            if (result.text[0].text && !result.text[0].title) {
+                result.text[0].title = "Reading I"
+            }
             return result;
         }
     } catch (err) {
@@ -23,9 +26,8 @@ export const fetchReadings = async (date) => {
 }
 
 export const fetchReadingsSpecial = async (link) => {
-    const identifier = link;
-    let id = identifier.split("/");
-    id = id.slice(3,);
+    let id = link.split("/");
+    id = id[id.length - 1];
     try {
         const response = await fetch(`https://readings-by-ugo.herokuapp.com/readings/special/${id}`)
 
@@ -45,16 +47,15 @@ export const fetchReflections = async () => {
 
         if (response.status == 200) {
             const result = await response.json();
-            let dateStr = result[0].title;
-            dateStr = dateStr.split(" ");
-            const year = dateStr[0];
-            const month = parseInt(dateStr[1]) - 1;
-            const day = dateStr[2]
-            const topDate = new Date(new Date(year, month, day).getTime())
-            let date = topDate;
+
             for (let i = 0; i <= result.length - 1; i++) {
+                let dateStr = result[i].title;
+                dateStr = dateStr.split(" ");
+                let year = dateStr[0],
+                    month = parseInt(dateStr[1]) - 1,
+                    day = dateStr[2],
+                    date = new Date(new Date(year, month, day).getTime());
                 result[i].date = date.toDateString();
-                date = new Date(date.getTime() - 86400000)
             }
             return result;
         }

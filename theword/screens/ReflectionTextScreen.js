@@ -9,11 +9,13 @@ import {
     ReadingsContainer, Text,
     TouchCalendar,
     TopText,
+    FooterText,
     MediumText,
     ReadingBoldText,
     VerseText,
     PageView,
-    ToastView
+    ToastView,
+    AddViewWrap
 } from '../styles/home.elements';
 import { TopBackground, LowerView, MessageText, View, InnerView } from '../styles/reflections.elements';
 import { fetchReflectionTextSingle } from '../apiCalls';
@@ -21,6 +23,13 @@ import monstrance from '../assets/monstrance_host.jpg';
 import { Alert, Clipboard, Platform, Share } from 'react-native';
 import { Indicator } from '../components/ActivityIndicator';
 import { Toast } from '../components/Toast';
+import Constants from 'expo-constants';
+import {AdMobBanner} from 'expo-ads-admob';
+import { PRODUCTION_ID, TEST_ID } from '../appKeys';
+
+
+// Is a real device and running in production.
+const adUnitID = Constants.isDevice && !__DEV__ ? PRODUCTION_ID : TEST_ID;
 
 const Item = ({ text }) => (
     <MessageText>{text}</MessageText>
@@ -32,6 +41,8 @@ const ReflectionTextScreen = ({ route, navigation }) => {
     const [mode, setMode] = useState("date")
     const [show, setShow] = useState(false);
     const [visibleToast, setVisibleToast] = useState(false);
+    const [hasAd, setHasAd] = useState(false)
+    const [hideBar, setHideBar] = useState(false)
     const today = new Date().getTime()
 
     const { url } = route.params;
@@ -91,13 +102,13 @@ const ReflectionTextScreen = ({ route, navigation }) => {
         setVisibleToast(true);
         const reflections = copiedReflections(text.message)
         Clipboard.setString(text.title + "\n" + text.author + "\n" + "\n" +
-            text.subtitle + "\n" + "\n" + text.verses + "\n" + "\n" + reflections)
+            text.subtitle + "\n" + "\n" + text.verses + "\n" + "\n" + reflections.join("\n\n"))
     }
 
     const copiedReflections = (text) => {
         const reflectionArr = [];
         for (let i = 0; i < text.length; i++) {
-            reflectionArr.push(text[i] + "\n" + "\n");
+            reflectionArr.push(text[i]);
         }
 
         return reflectionArr;
@@ -108,8 +119,8 @@ const ReflectionTextScreen = ({ route, navigation }) => {
         try {
             const result = await Share.share({
                 message: text.title + "\n" + text.author + "\n" + "\n" +
-                    text.subtitle + "\n" + "\n" + text.verses + "\n" + "\n" + reflections + "\n" + "\n" +
-                    "Download daily readings and reflections App from \n \n https://expo.io/@emmanuelum/theword",
+                    text.subtitle + "\n" + "\n" + text.verses + "\n" + "\n" + reflections.join("\n\n\n") + "\n" +
+                    "Download Catholic Daily Readings And Reflections App from Google Play at \n \n https://play.google.com/store/apps/details?id=com.euteksoftwares/theword",
             });
             if (result.action === Share.sharedAction) {
                 if (result.activityType) {
@@ -125,14 +136,30 @@ const ReflectionTextScreen = ({ route, navigation }) => {
         }
     }
 
+    const adRecieved = () => {
+        setHasAd(true);
+    }
+
+    const hideBarToggle = (e) => {
+        const currentOffset = e.nativeEvent.contentOffset.y
+        let direction = currentOffset > 330 ? "down" : "up";
+        if (currentOffset === 0) {
+            setHideBar(false)
+        }else if (direction === "down") {
+            setHideBar(true);
+        } else {
+            setHideBar(false);
+        }
+        };
+
     return (
         <HomeScreenContainer >
-            {text.message ? <PageView>
+            {text.message ? <PageView onScroll={(e) => hideBarToggle(e)}>
                 <HeaderContainer>
                     <TopBackground
                     >
 
-                        <StatusBar style="light" backgroundColor="#263759" />
+                        <StatusBar style="light" backgroundColor="#263759" hidden={hideBar} />
                         <TouchCalendar onPress={() => showDatePicker()}>
                             <CalendarText>{date.toDateString()},</CalendarText>
                         </TouchCalendar>
@@ -161,7 +188,6 @@ const ReflectionTextScreen = ({ route, navigation }) => {
                             mode={mode}
                             minimumDate={new Date(today - 1728000000 * 1.2)}
                             maximumDate={new Date(today)}
-                            is24Hour={true}
                             display="default"
                             onChange={changeDate}
                         />
@@ -180,14 +206,23 @@ const ReflectionTextScreen = ({ route, navigation }) => {
                             </InnerView>
                             )
                         }
-                        <ReadingBoldText>Catholic Diocese of Wichita</ReadingBoldText>
 
                     </LowerView>
+                    <FooterText>From CATHOLICDIOCESEOFWICHITA.ORG</FooterText>
                 </ReadingsContainer>
                 <ToastView>
                     <Toast visible={visibleToast} message="Text copied to clipboard" />
                 </ToastView>
             </PageView> : <Indicator />}
+            <AddViewWrap height={hasAd ? "auto": "0px"}>
+            <AdMobBanner
+                bannerSize="fullBanner"
+                adUnitID={adUnitID}
+                servePersonalizedAds={true}
+                onAdViewDidReceiveAd={adRecieved}
+                // onDidFailToReceiveAdWithError={failedToLoadBanner}
+            />
+            </AddViewWrap>
         </HomeScreenContainer>
     )
 }

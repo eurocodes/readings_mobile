@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar';
 import { Feather } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {AdMobBanner} from 'expo-ads-admob';
 import {
     HeaderContainer,
     CalendarText,
@@ -18,7 +19,8 @@ import {
     VerseText,
     ToastView,
     PsalmView,
-    ResponseText
+    ResponseText,
+    AddViewWrap
 } from '../styles/home.elements';
 import { fetchReadings, getReadings } from '../apiCalls';
 import churchWall from '../assets/church-wall-1.jpg';
@@ -27,8 +29,14 @@ import { Platform, Clipboard, Share, Alert } from 'react-native';
 import { Indicator } from "../components/ActivityIndicator";
 import { TouchableOpacity } from '../styles/home.elements';
 import { fetchReadingsSpecial } from '../apiCalls';
-import { FooterBoldText } from '../styles/home.elements';
+import { FooterText } from '../styles/home.elements';
 import { Toast } from '../components/Toast';
+import Constants from 'expo-constants';
+import { PRODUCTION_ID, TEST_ID } from '../appKeys';
+
+
+// Is a real device and running in production.
+const adUnitID = Constants.isDevice && !__DEV__ ? PRODUCTION_ID : TEST_ID;
 
 const Item = ({ title, verse, text }) => (
     <View>
@@ -43,6 +51,8 @@ const Item = ({ title, verse, text }) => (
                             ? <ResponseText key={i}>{a.replace(/\s\s+/g, "")}</ResponseText> :
                             text.split("\n")[0] == a ? <ResponseText key={i}>{a.replace(/\s\s+/g, "")}</ResponseText> :
                                 text.split("\n")[0].replace(/\s\s+/g, "").split(")")[1].trim() === a.replace(/\s\s+/g, "").split("R.")[1]
+                                    ? <ResponseText key={i}>{a.replace(/\s\s+/g, "")}</ResponseText> :
+                                text.split("\n")[0].replace(/\s\s+/g, "").split(")")[1].trim() === a.replace(/\s\s+/g, "").split("R. ")[1]
                                     ? <ResponseText key={i}>{a.replace(/\s\s+/g, "")}</ResponseText> :
                                     <Text key={i}>{a.replace(/\s\s+/g, "")}</Text>
                     )
@@ -76,8 +86,12 @@ const HomeScreen = ({ navigation }) => {
     const [show, setShow] = useState(false)
     const [copiedText, setCopiedText] = useState("")
     const [visibleToast, setVisibleToast] = useState(false);
+    const [hasAd, setHasAd] = useState(false)
+    const [hideBar, setHideBar] = useState(false)
+    const today = new Date().getTime()
     useEffect(() => {
         const fetchText = async () => {
+            try {
             let day = date.getDate();
             day = String(day)
             let month = date.getMonth() + 1;
@@ -94,6 +108,9 @@ const HomeScreen = ({ navigation }) => {
             const dateStr = month + day + year;
             const response = await fetchReadings(dateStr);
             setText(response)
+            } catch (error) {
+                console.log(error)
+            }
         }
         fetchText()
         setVisibleToast(false)
@@ -123,15 +140,15 @@ const HomeScreen = ({ navigation }) => {
     const copyToClipboard = () => {
         setVisibleToast(true);
         let allReading = copiedReadings(text.text)
-        Clipboard.setString(text.title.toUpperCase() + "\n" + text.lectionary + "\n" + "\n" + allReading)
+        Clipboard.setString(text.title.toUpperCase() + "\n" + text.lectionary + "\n" + "\n" + allReading.join("\n\n"))
 
     }
 
     const copiedReadings = (text) => {
         const reading = []
         for (let i = 0; i < text.length; i++) {
-            reading.push(text[i].title + ": " + text[i].verse + "\n" + "\n");
-            reading.push(text[i].text.replace(/\s\s+/g, "") + "\n" + "\n");
+            reading.push(text[i].title + ": " + text[i].verse);
+            reading.push(text[i].text.replace(/\s\s+/g, ""));
         }
         return reading;
     }
@@ -140,8 +157,8 @@ const HomeScreen = ({ navigation }) => {
         const allReading = copiedReadings(text.text)
         try {
             const result = await Share.share({
-                message: text.title.toUpperCase() + "\n" + text.lectionary + "\n" + "\n" + allReading + "\n" + "\n" +
-                    "Download daily readings and reflections App from \n \n https://expo.io/@emmanuelum/theword",
+                message: text.title.toUpperCase() + "\n" + text.lectionary + "\n" + "\n" + allReading.join("\n\n\n") + "\n\n" +
+                    "Download Catholic Daily Readings And Reflections App from Google Play at \n \n https://play.google.com/store/apps/details?id=com.euteksoftwares/theword",
             });
             if (result.action === Share.sharedAction) {
                 if (result.activityType) {
@@ -157,21 +174,37 @@ const HomeScreen = ({ navigation }) => {
         }
     }
 
+    const adRecieved = () => {
+        setHasAd(true);
+    }
+
     // const fetchCopiedText = async () => {
     //     const text = await Clipboard.getString()
     //     setCopiedText(text);
     // }
 
+    const hideBarToggle = (e) => {
+        const currentOffset = e.nativeEvent.contentOffset.y
+        let direction = currentOffset > 330 ? "down" : "up";
+        if (currentOffset === 0) {
+            setHideBar(false)
+        } else if (direction === "down") {
+            setHideBar(true);
+        } else {
+            setHideBar(false);
+        }
+        };
+
     return (
         <HomeScreenContainer >
-            {text.title ? <PageView>
+            {text.title ? <PageView onScroll={(e) => hideBarToggle(e)}>
                 <HeaderContainer>
                     <ImageBackground
                         source={monstrance}
                         imageStyle={{ borderBottomRightRadius: 65 }}
                     >
 
-                        <StatusBar style="light" backgroundColor="#141414" />
+                        <StatusBar style="light" backgroundColor="#141414" hidden={hideBar} />
                         <DarkOverLayView></DarkOverLayView>
                         <TouchCalendar onPress={() => showDatePicker()}>
                             <CalendarText>{date.toDateString()}</CalendarText>
@@ -199,15 +232,16 @@ const HomeScreen = ({ navigation }) => {
                             testID="dateTimePicker"
                             value={date}
                             mode={mode}
-                            is24Hour={true}
                             display="default"
+                            minimumDate={new Date(today - 86400000 * 182.5)}
+                            maximumDate={new Date(today + 86400000 * 182.5)}
                             onChange={changeDate}
                         />
                     )}
                 </HeaderContainer>
 
                 <ReadingsContainer>
-                    {text.text[0].title ? text.text.map((item) => <View key={item.id}>
+                    {text.text[0].verse ? text.text.map((item) => <View key={item.id}>
                         <Item title={item.title} verse={item.verse} text={item.text} />
                     </View>) :
                         text.text.map((item) => <View key={item.id}>
@@ -220,9 +254,18 @@ const HomeScreen = ({ navigation }) => {
                     <ToastView>
                         <Toast visible={visibleToast} message="Text copied to clipboard" />
                     </ToastView>
-                    <FooterBoldText>{text.ref}</FooterBoldText>
+                    <FooterText>From USCCB.ORG</FooterText>
                 </ReadingsContainer>
             </PageView> : <Indicator />}
+            <AddViewWrap height={hasAd ? "auto": "0px"}>
+            <AdMobBanner
+                bannerSize="fullBanner"
+                adUnitID={adUnitID}
+                servePersonalizedAds={true}
+                onAdViewDidReceiveAd={adRecieved}
+                // onDidFailToReceiveAdWithError={failedToLoadBanner}
+            />
+            </AddViewWrap>
         </HomeScreenContainer>
     )
 }

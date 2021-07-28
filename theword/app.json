@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "theword",
-    "slug": "theword",
+    "name": "Catholic Daily Readings And Reflections",
+    "slug": "catholic-daily-readings-and-reflections",
     "version": "1.0.0",
-    "icon": "./assets/appLogo-3.png",
+    "icon": "./assets/app-icon.png",
     "splash": {
-      "image": "./assets/appLogo-1.png",
+      "image": "./assets/splash-logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#263759"
     },
@@ -21,8 +21,11 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./assets/app-icon.png",
+        "backgroundColor": "#263759"
+      },
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-7087263627307917~6232672567"
       },
       "package": "com.euteksoftwares.theword",
       "versionCode": 1

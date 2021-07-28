@@ -136,13 +136,11 @@ border-bottom-right-radius: 20px;
 `;
 
 export const InnerView = styled.View`
-padding: 5px;
-border-radius: 15px;
 width: 90%;
 `;
 
 export const LowerView = styled.View`
-padding: 5px;
+margin-top: 10px;
 justify-content: center;
 align-items: center;
 `;
@@ -158,8 +156,13 @@ margin-top: 16px;
 `;
 
 // Videos
+export const VideoContainer = styled.SafeAreaView`
+flex: 1;
+justify-content: center;
+`;
+
 export const VideoScreen = styled.SafeAreaView`
 flex: 1;
 background-color: #2e2e2e;
-justify-content: center;
+justify-content: space-between;
 `;

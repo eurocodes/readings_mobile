@@ -15,14 +15,14 @@ import {
     BottomDrawerSection,
     DrawerItemText,
 } from '../styles/home.elements';
-import logo_3 from "../assets/appLogo-3.png";
+import logo_3 from "../assets/app-icon.png";
 
 export default function DrawerContent(props) {
 
     const onShare = async () => {
         try {
             const result = await Share.share({
-                message: "Download daily readings and reflections App from \n \n https://expo.io/@emmanuelum/theword",
+                message: "Download Catholic Daily Readings And Reflections App from Google Play at \n \n https://play.google.com/store/apps/details?id=com.euteksoftwares/theword",
             });
             if (result.action === Share.sharedAction) {
                 if (result.activityType) {

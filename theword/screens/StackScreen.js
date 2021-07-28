@@ -6,7 +6,6 @@ import ReflectionScreen from './ReflectionScreen';
 import VideoFrame from './VideoFrame';
 import ReflectionTextList from './ReflectionTextList';
 import ReflectionTextScreen from './ReflectionTextScreen';
-import SplashScreen from './SplashScreen';
 import AboutScreen from './AboutScreen';
 
 const Stack = createStackNavigator();
@@ -14,7 +13,7 @@ const Stack = createStackNavigator();
 const StackScreens = () => {
     return (
         <Stack.Navigator
-            initialRouteName="Splash"
+            initialRouteName="Daily Readings"
             screenOptions={{
                 headerShown: false,
             }}
@@ -25,7 +24,6 @@ const StackScreens = () => {
             <Stack.Screen name="Daily Reflection Text" component={ReflectionTextList} />
             <Stack.Screen name="Single Reflection" component={ReflectionTextScreen} />
             <Stack.Screen name="About us" component={AboutScreen} />
-            <Stack.Screen name="Splash" component={SplashScreen} />
         </Stack.Navigator>
     )
 }
