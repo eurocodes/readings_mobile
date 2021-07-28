@@ -6,6 +6,7 @@ import {AddViewWrap} from '../styles/home.elements';
 import Constants from 'expo-constants';
 import {AdMobBanner} from 'expo-ads-admob';
 import { PRODUCTION_ID, TEST_ID } from '../appKeys';
+import WebView from 'react-native-webview';
 
 // Is a real device and running in production.
 const adUnitID = Constants.isDevice && !__DEV__ ? PRODUCTION_ID : TEST_ID;
@@ -37,12 +38,21 @@ const VideoFrame = ({ route, navigation }) => {
         <VideoScreen >
             <StatusBar style="light" />
             <VideoContainer>
-            <YoutubePlayer
+            {/* <YoutubePlayer
                 height={300}
                 play={playing}
-                videoId={String(id)}
+                // videoId={String(id)}
+                videoId="YU8A0wxZQho"
                 onChangeState={onStateChange}
+            /> */}
+
+            <WebView
+            javaScriptEnabled={true}
+            source={{
+            uri: `https://www.youtube.com/embed/${id}?rel=0&autoplay=0&showinfo=0&controls=1`,
+            }}
             />
+
             </VideoContainer>
             {/* <Button title={playing ? "pause" : "play"} onPress={togglePlaying} /> */}
              <AddViewWrap height={hasAd ? "auto": "0px"}>
