@@ -1,5 +1,8 @@
+// const baseUrl = "http://localhost:8000";
+const baseUrl = "https://massreadingsapi.azurewebsites.net";
+
 export const getReadings = () => {
-    const data = fetch("http://localhost:8000/mass-readings/012721");
+    const data = fetch(`${baseUrlLocal}/mass-readings/012721`);
     data.then(response => {
         console.log("Response:", response)
         return response.json();
@@ -10,7 +13,7 @@ export const getReadings = () => {
 
 export const fetchReadings = async (date) => {
     try {
-        const response = await fetch(`https://readings-by-ugo.herokuapp.com/mass-readings/${date}`)
+        const response = await fetch(`${baseUrl}/mass-readings/${date}`)
 
         if (response.status == 200) {
             const result = await response.json();
@@ -29,7 +32,7 @@ export const fetchReadingsSpecial = async (link) => {
     let id = link.split("/");
     id = id[id.length - 1];
     try {
-        const response = await fetch(`https://readings-by-ugo.herokuapp.com/readings/special/${id}`)
+        const response = await fetch(`${baseUrl}/readings/special/${id}`)
 
         if (response.status == 200) {
             const result = await response.json();
@@ -43,7 +46,7 @@ export const fetchReadingsSpecial = async (link) => {
 
 export const fetchReflections = async () => {
     try {
-        const response = await fetch("https://readings-by-ugo.herokuapp.com/reflections/list")
+        const response = await fetch(`${baseUrl}/reflections/list`)
 
         if (response.status == 200) {
             const result = await response.json();
@@ -68,7 +71,7 @@ export const fetchReflections = async () => {
 export const fetchYoutubeId = async (link) => {
 
     try {
-        const response = await fetch(`https://readings-by-ugo.herokuapp.com/vid${link}`)
+        const response = await fetch(`${baseUrl}/vid${link}`)
 
         if (response.status == 200) {
             const result = await response.json();
@@ -83,7 +86,7 @@ export const fetchYoutubeId = async (link) => {
 
 export const fetchReflectionTextList = async () => {
     try {
-        const response = await fetch("https://readings-by-ugo.herokuapp.com/reflections/text/list")
+        const response = await fetch(`${baseUrl}/reflections/text/list`)
 
         if (response.status == 200) {
             const result = await response.json();
@@ -96,8 +99,9 @@ export const fetchReflectionTextList = async () => {
 }
 
 export const fetchReflectionTextSingle = async (url, date) => {
+    console.log("Date: ", date);
     try {
-        const response = await fetch(`https://readings-by-ugo.herokuapp.com/reflections/text/single/${date}`, {
+        const response = await fetch(`${baseUrl}/reflections/text/single/${date}`, {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ url })
@@ -109,7 +113,7 @@ export const fetchReflectionTextSingle = async (url, date) => {
             return result;
         }
     } catch (err) {
-        console.log("Error:", err)
+        console.log("Error fetchReflectionTextSingle():", err)
     }
 
 }
@@ -117,7 +121,7 @@ export const fetchReflectionTextSingle = async (url, date) => {
 // Get site details
 export const fetchDetailsFromSite = async () => {
     try {
-        const response = await fetch("https://readings-by-ugo.herokuapp.com/about")
+        const response = await fetch(`${baseUrl}/about`)
 
         if (response.status == 200) {
             const result = await response.json();

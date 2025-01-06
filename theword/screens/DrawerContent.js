@@ -66,7 +66,7 @@ export default function DrawerContent(props) {
                             icon={({ color, size }) => (
                                 <Feather name="video" color="#fff" size={size} />
                             )}
-                            label={() => <DrawerItemText>Daily Reflection</DrawerItemText>}
+                            label={() => <DrawerItemText>Daily Reflections</DrawerItemText>}
                             onPress={() => { props.navigation.navigate("Daily Reflection") }}
                         />
                         <DrawerItem
@@ -80,8 +80,8 @@ export default function DrawerContent(props) {
                             icon={({ color, size }) => (
                                 <Feather name="info" color="#fff" size={size} />
                             )}
-                            label={() => <DrawerItemText>About us</DrawerItemText>}
-                            onPress={() => { props.navigation.navigate("About us") }}
+                            label={() => <DrawerItemText>About</DrawerItemText>}
+                            onPress={() => { props.navigation.navigate("About") }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (

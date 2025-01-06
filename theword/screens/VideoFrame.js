@@ -2,9 +2,9 @@ import React, { useEffect, useState, useCallback } from 'react'
 import { StatusBar } from 'expo-status-bar';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import { VideoScreen, VideoContainer } from '../styles/reflections.elements';
-import {AddViewWrap} from '../styles/home.elements';
+//import {AddViewWrap} from '../styles/home.elements';
 import Constants from 'expo-constants';
-import {AdMobBanner} from 'expo-ads-admob';
+//import {AdMobBanner} from 'expo-ads-admob';
 import { PRODUCTION_ID, TEST_ID } from '../appKeys';
 import WebView from 'react-native-webview';
 
@@ -55,7 +55,7 @@ const VideoFrame = ({ route, navigation }) => {
 
             </VideoContainer>
             {/* <Button title={playing ? "pause" : "play"} onPress={togglePlaying} /> */}
-             <AddViewWrap height={hasAd ? "auto": "0px"}>
+             {/* <AddViewWrap height={hasAd ? "auto": "0px"}>
             <AdMobBanner
                 bannerSize="fullBanner"
                 adUnitID={adUnitID}
@@ -63,7 +63,7 @@ const VideoFrame = ({ route, navigation }) => {
                 onAdViewDidReceiveAd={adRecieved}
                 // onDidFailToReceiveAdWithError={failedToLoadBanner}
             />
-            </AddViewWrap>
+            </AddViewWrap> */}
         </VideoScreen>
     )
 }

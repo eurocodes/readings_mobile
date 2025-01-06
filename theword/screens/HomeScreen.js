@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar';
 import { Feather } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {AdMobBanner} from 'expo-ads-admob';
+// import { AdMobBanner } from 'expo-ads-admob';
 import {
     HeaderContainer,
     CalendarText,
@@ -27,12 +26,13 @@ import churchWall from '../assets/church-wall-1.jpg';
 import monstrance from '../assets/monstrance_host.jpg';
 import { Platform, Clipboard, Share, Alert } from 'react-native';
 import { Indicator } from "../components/ActivityIndicator";
-import { TouchableOpacity } from '../styles/home.elements';
+import { TouchableOpacity, PrevNextContainer } from '../styles/home.elements';
 import { fetchReadingsSpecial } from '../apiCalls';
 import { FooterText } from '../styles/home.elements';
 import { Toast } from '../components/Toast';
 import Constants from 'expo-constants';
 import { PRODUCTION_ID, TEST_ID } from '../appKeys';
+import { DateSelector } from '../components/DateSelector';
 
 
 // Is a real device and running in production.
@@ -86,7 +86,7 @@ const HomeScreen = ({ navigation }) => {
     const [show, setShow] = useState(false)
     const [copiedText, setCopiedText] = useState("")
     const [visibleToast, setVisibleToast] = useState(false);
-    const [hasAd, setHasAd] = useState(false)
+    //const [hasAd, setHasAd] = useState(false)
     const [hideBar, setHideBar] = useState(false)
     const today = new Date().getTime()
     useEffect(() => {
@@ -106,6 +106,7 @@ const HomeScreen = ({ navigation }) => {
                 month = "0" + month
             }
             const dateStr = month + day + year;
+            console.log("DateString: ", dateStr);
             const response = await fetchReadings(dateStr);
             setText(response)
             } catch (error) {
@@ -114,6 +115,8 @@ const HomeScreen = ({ navigation }) => {
         }
         fetchText()
         setVisibleToast(false)
+        console.log("Env: ", __DEV__);
+        console.log("adUnit: ", adUnitID);
     }, [date, visibleToast])
 
     // Get readings manually
@@ -123,7 +126,10 @@ const HomeScreen = ({ navigation }) => {
     }
 
     const changeDate = (selectedDate) => {
-        const currentDate = selectedDate.nativeEvent.timestamp || date;
+        console.log("CurrentDate: ", date);
+        console.log("NextPrev: ", selectedDate);
+        setText({});
+        const currentDate = selectedDate.nativeEvent?.timestamp || date;
         setShow(Platform.OS === "ios");
         setDate(new Date(currentDate))
     };
@@ -174,9 +180,9 @@ const HomeScreen = ({ navigation }) => {
         }
     }
 
-    const adRecieved = () => {
-        setHasAd(true);
-    }
+    // const adRecieved = () => {
+    //     setHasAd(true);
+    // }
 
     // const fetchCopiedText = async () => {
     //     const text = await Clipboard.getString()
@@ -196,7 +202,7 @@ const HomeScreen = ({ navigation }) => {
         };
 
     return (
-        <HomeScreenContainer >
+        <HomeScreenContainer>
             {text.title ? <PageView onScroll={(e) => hideBarToggle(e)}>
                 <HeaderContainer>
                     <ImageBackground
@@ -228,18 +234,28 @@ const HomeScreen = ({ navigation }) => {
                             }} />
                     </ImageBackground>
                     {show && (
-                        <DateTimePicker
-                            testID="dateTimePicker"
-                            value={date}
-                            mode={mode}
-                            display="default"
-                            minimumDate={new Date(today - 86400000 * 182.5)}
-                            maximumDate={new Date(today + 86400000 * 182.5)}
-                            onChange={changeDate}
+                        <DateSelector 
+                            platform = {Platform.OS}
+                            today = {today}
+                            date = {date}
+                            mode = {mode}
+                            changeDate = {changeDate}
                         />
                     )}
                 </HeaderContainer>
+                <PrevNextContainer>
+                <Feather name="arrow-left" size={22} color="#263759"
+                            onPress={() => changeDate(date.setDate(date.getDate() - 1))}
+                            style={{
+                                left: 16, top: 15
+                            }} />
 
+                <Feather name="arrow-right" size={22} color="#263759"
+                            onPress={() => changeDate(date.setDate(date.getDate() + 1))}
+                            style={{
+                                right: 16, top: 15
+                            }} />
+                </PrevNextContainer>
                 <ReadingsContainer>
                     {text.text[0].verse ? text.text.map((item) => <View key={item.id}>
                         <Item title={item.title} verse={item.verse} text={item.text} />
@@ -257,7 +273,7 @@ const HomeScreen = ({ navigation }) => {
                     <FooterText>From USCCB.ORG</FooterText>
                 </ReadingsContainer>
             </PageView> : <Indicator />}
-            <AddViewWrap height={hasAd ? "auto": "0px"}>
+            {/* <AddViewWrap height={hasAd ? "auto": "0px"}>
             <AdMobBanner
                 bannerSize="fullBanner"
                 adUnitID={adUnitID}
@@ -265,7 +281,7 @@ const HomeScreen = ({ navigation }) => {
                 onAdViewDidReceiveAd={adRecieved}
                 // onDidFailToReceiveAdWithError={failedToLoadBanner}
             />
-            </AddViewWrap>
+            </AddViewWrap> */}
         </HomeScreenContainer>
     )
 }

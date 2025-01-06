@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Catholic Daily Readings And Reflections",
-    "slug": "catholic-daily-readings-and-reflections",
+    "name": "Daily Catholic Mass Readings",
+    "slug": "daily-catholic-mass-readings-and-reflections",
     "version": "1.0.0",
     "icon": "./assets/app-icon.png",
     "splash": {
@@ -27,12 +27,13 @@
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-7087263627307917~6232672567"
       },
-      "package": "com.euteksoftwares.theword",
+      "package": "com.ugsoft.theword",
       "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": ""
+    "description": "",
+    "jsEngine": "hermes"
   }
 }

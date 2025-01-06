@@ -17,7 +17,9 @@ export default function App() {
         initialRouteName="Home"
         drawerType="back"
         drawerContent={props => <DrawerContent {...props} />}
-
+        screenOptions={{
+          headerShown: false
+      }}
       >
         <Drawer.Screen name="Home" component={StackScreens} />
         <Drawer.Screen name="Stack Home" component={ReflectionScreen} />
