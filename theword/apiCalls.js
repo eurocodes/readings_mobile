@@ -1,4 +1,4 @@
-// const baseUrl = "http://localhost:8000";
+//const baseUrl = "http://localhost:8000";
 const baseUrl = "https://massreadingsapi.azurewebsites.net";
 
 export const getReadings = () => {
@@ -99,7 +99,6 @@ export const fetchReflectionTextList = async () => {
 }
 
 export const fetchReflectionTextSingle = async (url, date) => {
-    console.log("Date: ", date);
     try {
         const response = await fetch(`${baseUrl}/reflections/text/single/${date}`, {
             method: "POST",

@@ -26,9 +26,9 @@ const AboutScreen = ({ navigation }) => {
             const email = response.email.split(":")[1];
             setDetails(response)
         }
-        getDetails();
-        setVisibleToast(false)
-    }, [visibleToast]);
+        // getDetails();
+        // setVisibleToast(false)
+    }, [/*visibleToast*/]);
 
     const copyToClipboard = () => {
         setVisibleToast(true);
@@ -51,7 +51,7 @@ const AboutScreen = ({ navigation }) => {
             />
 
             <Title>App version: 1.0.0</Title>
-            {details.email ? <AboutView>
+            {/* {details.email ? <AboutView>
                 <AboutInnerText>App by {details.name}</AboutInnerText>
                 <AboutInnerView>
                     <Feather name="mail" size={22} color="#fff" />
@@ -61,10 +61,10 @@ const AboutScreen = ({ navigation }) => {
                 </AboutInnerView>
                 <AboutInnerText>Appreciation</AboutInnerText>
                 <AboutInnerText>{details.message}</AboutInnerText>
-            </AboutView>: <Indicator />}
-            <ToastView>
+            </AboutView>: <Indicator />} */}
+            {/* <ToastView>
                 <Toast visible={visibleToast} message="Email copied to clipboard" />
-            </ToastView>
+            </ToastView> */}
 
             </ScrollAbout>
         </AboutBackground>

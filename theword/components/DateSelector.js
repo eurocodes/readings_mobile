@@ -2,25 +2,20 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import DatePickerIOS from '@react-native-community/datetimepicker';
 
 export const DateSelector = ({ platform, today, date, mode, changeDate }) => {
-    //platform = "ios"
-    console.log("os is ", platform);
     if(platform == "android"){
-        console.log("Android is os: ", platform);
-        console.log("New Date ", date);
         return (
             <DateTimePicker
                 testID="dateTimePicker"
                 value={date}
                 mode={mode}
                 display="default"
-                minimumDate={new Date(today - 86400000 * 182.5)}
-                maximumDate={new Date(today + 86400000 * 182.5)}
+                minimumDate={new Date(today - 86400000 * 273.75)}
+                maximumDate={new Date(today + 86400000 * 273.75)}
                 onChange={changeDate}
+                accessibilityLabel='Date picker calendar'
             />
         );
     } else if(platform == "ios"){
-        console.log("ios is os: ", platform);
-        console.log("New Date ", date);
         return (
             <DatePickerIOS
             testID="dateTimePicker"

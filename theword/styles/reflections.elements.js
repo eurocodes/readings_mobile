@@ -175,4 +175,5 @@ flex-direction: row;
 justify-content: space-between;
 z-index: 1;
 width: 100%;
+margin-bottom: 10px;
 `;

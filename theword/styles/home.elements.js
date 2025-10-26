@@ -233,6 +233,7 @@ padding: 0 15px;
 // Ad View
 export const AddViewWrap = styled.View`
 height: ${props => props.height};
+width: ${props => props.height};
 `;
 
 // Buttons
@@ -242,4 +243,5 @@ flex-direction: row;
 justify-content: space-between;
 z-index: 1;
 width: 100%;
+margin-bottom: 10px;
 `;

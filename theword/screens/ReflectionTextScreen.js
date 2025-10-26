@@ -24,13 +24,26 @@ import { Alert, Clipboard, Platform, Share } from 'react-native';
 import { Indicator } from '../components/ActivityIndicator';
 import { Toast } from '../components/Toast';
 import Constants from 'expo-constants';
-//import {AdMobBanner} from 'expo-ads-admob';
-import { PRODUCTION_ID, TEST_ID } from '../appKeys';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+import { PRODUCTION_ID, IOS_PRODUCTION_ID } from '../appKeys';
 import { DateSelector } from '../components/DateSelector';
 
 
 // Is a real device and running in production.
-const adUnitID = Constants.isDevice && !__DEV__ ? PRODUCTION_ID : TEST_ID;
+//const adUnitID = Constants.isDevice && !__DEV__ ? PRODUCTION_ID : TestIds.BANNER;
+const adUnitID = getAdUnitId();
+
+function getAdUnitId(){
+    if(__DEV__){
+        return TestIds.BANNER;
+    }
+
+    switch(Platform.OS.toLowerCase()){
+        case 'ios': return IOS_PRODUCTION_ID;
+        case 'android': return PRODUCTION_ID;
+        default: return "";
+    }
+} 
 
 const Item = ({ text }) => (
     <MessageText>{text}</MessageText>
@@ -103,12 +116,19 @@ const ReflectionTextScreen = ({ route, navigation }) => {
     }
 
     const onShare = async () => {
-        const reflections = copiedReflections(text.message)
+        const reflections = copiedReflections(text.message);
+        let shareUrl = "";
+        if(Platform.OS.toLowerCase() == "ios"){
+            shareUrl = "Download the Daily Catholic Readings And Reflections from App Store at \n \n https://apps.apple.com/ng/app/theword/";
+        }
+        else{
+            shareUrl = "Download the Daily Catholic Readings And Reflections from Google Play at \n \n https://play.google.com/store/apps/details?id=com.ugsoft.theword";
+        }
         try {
             const result = await Share.share({
                 message: text.title + "\n" + text.author + "\n" + "\n" +
                     text.subtitle + "\n" + "\n" + text.verses + "\n" + "\n" + reflections.join("\n\n\n") + "\n" +
-                    "Download Catholic Daily Readings And Reflections App from Google Play at \n \n https://play.google.com/store/apps/details?id=com.euteksoftwares/theword",
+                    shareUrl,
             });
             if (result.action === Share.sharedAction) {
                 if (result.activityType) {
@@ -120,7 +140,7 @@ const ReflectionTextScreen = ({ route, navigation }) => {
                 console.log("Dismissed")
             }
         } catch (error) {
-            Alert.alert(error.message)
+            console.log(error.message)
         }
     }
 
@@ -142,15 +162,12 @@ const ReflectionTextScreen = ({ route, navigation }) => {
 
     return (
         <HomeScreenContainer >
-            {text.message ? <PageView onScroll={(e) => hideBarToggle(e)}>
+            {text?.message ? <PageView onScroll={(e) => hideBarToggle(e)}>
                 <HeaderContainer>
                     <TopBackground
                     >
 
                         <StatusBar style="light" backgroundColor="#263759" hidden={hideBar} />
-                        {/* <TouchCalendar onPress={() => showDatePicker()}>
-                            <CalendarText>{date.toDateString()}</CalendarText>
-                        </TouchCalendar> */}
                         <TopText>{text.title}</TopText>
                         <MediumText>{text.author}</MediumText>
                         <Feather name="arrow-left" size={22} color="#fff"
@@ -161,12 +178,12 @@ const ReflectionTextScreen = ({ route, navigation }) => {
                         <Feather name="copy" size={22} color="#fff"
                             onPress={() => copyText()}
                             style={{
-                                position: "absolute", top: 20, right: 70
+                                position: "absolute", top: 40, right: 70
                             }} />
                         <Feather name="share-2" size={22} color="#fff"
                             onPress={onShare}
                             style={{
-                                position: "absolute", top: 20, right: 30
+                                position: "absolute", top: 40, right: 30
                             }} />
                     </TopBackground>
                     {/* {show && (
@@ -212,15 +229,20 @@ const ReflectionTextScreen = ({ route, navigation }) => {
                     <Toast visible={visibleToast} message="Text copied to clipboard" />
                 </ToastView>
             </PageView> : <Indicator />}
-            {/* <AddViewWrap height={hasAd ? "auto": "0px"}>
-            <AdMobBanner
-                bannerSize="fullBanner"
-                adUnitID={adUnitID}
-                servePersonalizedAds={true}
-                onAdViewDidReceiveAd={adRecieved}
-                // onDidFailToReceiveAdWithError={failedToLoadBanner}
-            />
-            </AddViewWrap> */}
+            <AddViewWrap height={hasAd ? "auto": "0px"} width={hasAd ? "auto": "0px"}>
+            <BannerAd
+                    // It is extremely important to use test IDs as you can be banned/restricted by Google AdMob for inappropriately using real ad banners during testing
+                    unitId={adUnitID}
+                    size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                    requestOptions={{
+                    requestNonPersonalizedAdsOnly: true, 
+                    // You can change this setting depending on whether you want to use the permissions tracking we set up in the initializing
+                    }}
+                    onAdLoaded={() => {
+                    setHasAd(true);
+                    }}
+                />
+            </AddViewWrap>
         </HomeScreenContainer>
     )
 }
