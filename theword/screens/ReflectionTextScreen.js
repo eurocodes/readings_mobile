@@ -17,19 +17,33 @@ import {
     ToastView,
     AddViewWrap
 } from '../styles/home.elements';
-import { TopBackground, LowerView, MessageText, View, InnerView } from '../styles/reflections.elements';
+import { TopBackground, LowerView, MessageText, View, InnerView, PrevNextContainer } from '../styles/reflections.elements';
 import { fetchReflectionTextSingle } from '../apiCalls';
 import monstrance from '../assets/monstrance_host.jpg';
 import { Alert, Clipboard, Platform, Share } from 'react-native';
 import { Indicator } from '../components/ActivityIndicator';
 import { Toast } from '../components/Toast';
 import Constants from 'expo-constants';
-import {AdMobBanner} from 'expo-ads-admob';
-import { PRODUCTION_ID, TEST_ID } from '../appKeys';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+import { PRODUCTION_ID, IOS_PRODUCTION_ID } from '../appKeys';
+import { DateSelector } from '../components/DateSelector';
 
 
 // Is a real device and running in production.
-const adUnitID = Constants.isDevice && !__DEV__ ? PRODUCTION_ID : TEST_ID;
+//const adUnitID = Constants.isDevice && !__DEV__ ? PRODUCTION_ID : TestIds.BANNER;
+const adUnitID = getAdUnitId();
+
+function getAdUnitId(){
+    if(__DEV__){
+        return TestIds.BANNER;
+    }
+
+    switch(Platform.OS.toLowerCase()){
+        case 'ios': return IOS_PRODUCTION_ID;
+        case 'android': return PRODUCTION_ID;
+        default: return "";
+    }
+} 
 
 const Item = ({ text }) => (
     <MessageText>{text}</MessageText>
@@ -45,45 +59,32 @@ const ReflectionTextScreen = ({ route, navigation }) => {
     const [hideBar, setHideBar] = useState(false)
     const today = new Date().getTime()
 
-    const { url } = route.params;
     useEffect(() => {
-        const fetchSingleText = async () => {
-            const urlStr = url;
-            const response = await fetchReflectionTextSingle(urlStr, "");
-            let refDate = url.split("/")
-            refDate = refDate.slice(4, 5);
-            refDate = refDate[0];
-            refDate = refDate.split("-")
-            setDate(new Date(refDate[0], refDate[1] - 1, refDate[2]))
-            setText(response)
-        }
         fetchSingleText()
         setVisibleToast(false)
     }, [visibleToast])
 
-    const fetchSingleTextDated = async (date) => {
-        let day = date.getDate();
-        day = String(day)
-        let month = date.getMonth() + 1;
-        month = String(month);
-        let year = date.getFullYear();
-        year = String(year);
-        year = year.slice(2, 4);
-        if (day.length == 1) {
-            day = "0" + day
-        }
-        if (month.length == 1) {
-            month = "0" + month
-        }
-        const dateStr = `${year}-${month}-${day}`;
-        const response = await fetchReflectionTextSingle("", dateStr);
+    const { url } = route.params;
+    const fetchSingleText = async () => {
+        const urlStr = url;
+        const response = await fetchReflectionTextSingle(urlStr, "");
+        let refDate = url.split("/")
+        refDate = refDate.slice(4, 5);
+        refDate = refDate[0];
+        refDate = refDate.split("-")
+        //setDate(new Date(refDate[0], refDate[1] - 1, refDate[2]))
         setText(response)
     }
-    // fetchSingleTextDated()
+
+    const fetchSingleTextPrevNext = async (url) => {
+        setText({});
+        const response = await fetchReflectionTextSingle(url, "");
+        setText(response)
+    }
 
     const changeDate = (selectedDate) => {
         const currentDate = selectedDate.nativeEvent.timestamp || date;
-        setShow(Platform.OS === "ios");
+        setShow(true);
         setDate(new Date(currentDate));
         fetchSingleTextDated(new Date(currentDate))
 
@@ -115,12 +116,19 @@ const ReflectionTextScreen = ({ route, navigation }) => {
     }
 
     const onShare = async () => {
-        const reflections = copiedReflections(text.message)
+        const reflections = copiedReflections(text.message);
+        let shareUrl = "";
+        if(Platform.OS.toLowerCase() == "ios"){
+            shareUrl = "Download the Daily Catholic Readings And Reflections from App Store at \n \n https://apps.apple.com/ng/app/theword/";
+        }
+        else{
+            shareUrl = "Download the Daily Catholic Readings And Reflections from Google Play at \n \n https://play.google.com/store/apps/details?id=com.ugsoft.theword";
+        }
         try {
             const result = await Share.share({
                 message: text.title + "\n" + text.author + "\n" + "\n" +
                     text.subtitle + "\n" + "\n" + text.verses + "\n" + "\n" + reflections.join("\n\n\n") + "\n" +
-                    "Download Catholic Daily Readings And Reflections App from Google Play at \n \n https://play.google.com/store/apps/details?id=com.euteksoftwares/theword",
+                    shareUrl,
             });
             if (result.action === Share.sharedAction) {
                 if (result.activityType) {
@@ -132,7 +140,7 @@ const ReflectionTextScreen = ({ route, navigation }) => {
                 console.log("Dismissed")
             }
         } catch (error) {
-            Alert.alert(error.message)
+            console.log(error.message)
         }
     }
 
@@ -154,15 +162,12 @@ const ReflectionTextScreen = ({ route, navigation }) => {
 
     return (
         <HomeScreenContainer >
-            {text.message ? <PageView onScroll={(e) => hideBarToggle(e)}>
+            {text?.message ? <PageView onScroll={(e) => hideBarToggle(e)}>
                 <HeaderContainer>
                     <TopBackground
                     >
 
                         <StatusBar style="light" backgroundColor="#263759" hidden={hideBar} />
-                        <TouchCalendar onPress={() => showDatePicker()}>
-                            <CalendarText>{date.toDateString()},</CalendarText>
-                        </TouchCalendar>
                         <TopText>{text.title}</TopText>
                         <MediumText>{text.author}</MediumText>
                         <Feather name="arrow-left" size={22} color="#fff"
@@ -181,19 +186,29 @@ const ReflectionTextScreen = ({ route, navigation }) => {
                                 position: "absolute", top: 40, right: 30
                             }} />
                     </TopBackground>
-                    {show && (
-                        <DateTimePicker
-                            testID="dateTimePicker"
-                            value={date}
-                            mode={mode}
-                            minimumDate={new Date(today - 1728000000 * 1.2)}
-                            maximumDate={new Date(today)}
-                            display="default"
-                            onChange={changeDate}
+                    {/* {show && (
+                        <DateSelector 
+                            platform = {Platform.OS}
+                            today = {today}
+                            date = {date}
+                            mode = {mode}
+                            changeDate = {changeDate}
                         />
-                    )}
+                    )} */}
                 </HeaderContainer>
+                <PrevNextContainer>
+                {text.prev && <Feather name="arrow-left" size={22} color="#263759"
+                            onPress={() => fetchSingleTextPrevNext(text.prev)}
+                            style={{
+                                top: 15, left: 16
+                            }} />}
 
+                {text.next &&<Feather name="arrow-right" size={22} color="#263759"
+                            onPress={() => fetchSingleTextPrevNext(text.next)}
+                            style={{
+                                top: 15, right: 16
+                            }} />}
+                </PrevNextContainer>
                 <ReadingsContainer>
                     <LowerView>
                         <InnerView>
@@ -214,14 +229,19 @@ const ReflectionTextScreen = ({ route, navigation }) => {
                     <Toast visible={visibleToast} message="Text copied to clipboard" />
                 </ToastView>
             </PageView> : <Indicator />}
-            <AddViewWrap height={hasAd ? "auto": "0px"}>
-            <AdMobBanner
-                bannerSize="fullBanner"
-                adUnitID={adUnitID}
-                servePersonalizedAds={true}
-                onAdViewDidReceiveAd={adRecieved}
-                // onDidFailToReceiveAdWithError={failedToLoadBanner}
-            />
+            <AddViewWrap height={hasAd ? "auto": "0px"} width={hasAd ? "auto": "0px"}>
+            <BannerAd
+                    // It is extremely important to use test IDs as you can be banned/restricted by Google AdMob for inappropriately using real ad banners during testing
+                    unitId={adUnitID}
+                    size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                    requestOptions={{
+                    requestNonPersonalizedAdsOnly: true, 
+                    // You can change this setting depending on whether you want to use the permissions tracking we set up in the initializing
+                    }}
+                    onAdLoaded={() => {
+                    setHasAd(true);
+                    }}
+                />
             </AddViewWrap>
         </HomeScreenContainer>
     )

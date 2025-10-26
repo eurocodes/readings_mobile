@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar';
 import { Feather } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {AdMobBanner} from 'expo-ads-admob';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import {
     HeaderContainer,
     CalendarText,
@@ -27,17 +26,29 @@ import churchWall from '../assets/church-wall-1.jpg';
 import monstrance from '../assets/monstrance_host.jpg';
 import { Platform, Clipboard, Share, Alert } from 'react-native';
 import { Indicator } from "../components/ActivityIndicator";
-import { TouchableOpacity } from '../styles/home.elements';
+import { TouchableOpacity, PrevNextContainer } from '../styles/home.elements';
 import { fetchReadingsSpecial } from '../apiCalls';
 import { FooterText } from '../styles/home.elements';
 import { Toast } from '../components/Toast';
 import Constants from 'expo-constants';
-import { PRODUCTION_ID, TEST_ID } from '../appKeys';
+import { PRODUCTION_ID, IOS_PRODUCTION_ID } from '../appKeys';
+import { DateSelector } from '../components/DateSelector';
 
 
 // Is a real device and running in production.
-const adUnitID = Constants.isDevice && !__DEV__ ? PRODUCTION_ID : TEST_ID;
+const adUnitID = getAdUnitId();
 
+function getAdUnitId(){
+    if(__DEV__){
+        return TestIds.BANNER;
+    }
+
+    switch(Platform.OS.toLowerCase()){
+        case 'ios': return IOS_PRODUCTION_ID;
+        case 'android': return PRODUCTION_ID;
+        default: return "";
+    }
+} 
 const Item = ({ title, verse, text }) => (
     <View>
         <ReadingBoldText>{title}</ReadingBoldText>
@@ -123,7 +134,8 @@ const HomeScreen = ({ navigation }) => {
     }
 
     const changeDate = (selectedDate) => {
-        const currentDate = selectedDate.nativeEvent.timestamp || date;
+        setText({});
+        const currentDate = selectedDate.nativeEvent?.timestamp || date;
         setShow(Platform.OS === "ios");
         setDate(new Date(currentDate))
     };
@@ -136,6 +148,10 @@ const HomeScreen = ({ navigation }) => {
     const showDatePicker = () => {
         showMode("date");
     }
+
+    // set min and max arrow date navigator
+    const minimumDate = new Date(today - 86400000 * 273.75);
+    const maximumDate = new Date(today + 86400000 * 273.75);
 
     const copyToClipboard = () => {
         setVisibleToast(true);
@@ -155,22 +171,29 @@ const HomeScreen = ({ navigation }) => {
 
     const onShare = async () => {
         const allReading = copiedReadings(text.text)
+        let shareUrl = "";
+        if(Platform.OS.toLowerCase() == "ios"){
+            shareUrl = "Download the Daily Catholic Readings And Reflections from App Store at \n \n https://apps.apple.com/ng/app/theword/";
+        }
+        else{
+            shareUrl = "Download the Daily Catholic Readings And Reflections from Google Play at \n \n https://play.google.com/store/apps/details?id=com.ugsoft.theword";
+        }
         try {
             const result = await Share.share({
                 message: text.title.toUpperCase() + "\n" + text.lectionary + "\n" + "\n" + allReading.join("\n\n\n") + "\n\n" +
-                    "Download Catholic Daily Readings And Reflections App from Google Play at \n \n https://play.google.com/store/apps/details?id=com.euteksoftwares/theword",
+                    shareUrl,
             });
             if (result.action === Share.sharedAction) {
                 if (result.activityType) {
                     console.log("Shared with actitvity type of" + result.activityType)
                 } else {
-                    Alert.alert("Shared")
+                    console.log("Shared")
                 }
             } else if (result.action === Share.dismissedAction) {
                 console.log("Dismissed")
             }
         } catch (error) {
-            Alert.alert(error.message)
+            console.log(error.message)
         }
     }
 
@@ -196,8 +219,8 @@ const HomeScreen = ({ navigation }) => {
         };
 
     return (
-        <HomeScreenContainer >
-            {text.title ? <PageView onScroll={(e) => hideBarToggle(e)}>
+        <HomeScreenContainer>
+            {text?.title ? <PageView onScroll={(e) => hideBarToggle(e)}>
                 <HeaderContainer>
                     <ImageBackground
                         source={monstrance}
@@ -228,18 +251,28 @@ const HomeScreen = ({ navigation }) => {
                             }} />
                     </ImageBackground>
                     {show && (
-                        <DateTimePicker
-                            testID="dateTimePicker"
-                            value={date}
-                            mode={mode}
-                            display="default"
-                            minimumDate={new Date(today - 86400000 * 182.5)}
-                            maximumDate={new Date(today + 86400000 * 182.5)}
-                            onChange={changeDate}
+                        <DateSelector 
+                            platform = {Platform.OS}
+                            today = {today}
+                            date = {date}
+                            mode = {mode}
+                            changeDate = {changeDate}
                         />
                     )}
                 </HeaderContainer>
+                <PrevNextContainer>
+                <Feather name="arrow-left" size={22} color="#263759"
+                            onPress={() => changeDate(date.setDate(date.getDate() - 1))}
+                            style={{
+                                left: 16, top: 15
+                            }} />
 
+                {maximumDate > date && <Feather name="arrow-right" size={22} color="#263759"
+                            onPress={() => changeDate(date.setDate(date.getDate() + 1))}
+                            style={{
+                                right: 16, top: 15,
+                            }} />}
+                </PrevNextContainer>
                 <ReadingsContainer>
                     {text.text[0].verse ? text.text.map((item) => <View key={item.id}>
                         <Item title={item.title} verse={item.verse} text={item.text} />
@@ -257,14 +290,19 @@ const HomeScreen = ({ navigation }) => {
                     <FooterText>From USCCB.ORG</FooterText>
                 </ReadingsContainer>
             </PageView> : <Indicator />}
-            <AddViewWrap height={hasAd ? "auto": "0px"}>
-            <AdMobBanner
-                bannerSize="fullBanner"
-                adUnitID={adUnitID}
-                servePersonalizedAds={true}
-                onAdViewDidReceiveAd={adRecieved}
-                // onDidFailToReceiveAdWithError={failedToLoadBanner}
-            />
+            <AddViewWrap height={hasAd ? "auto": "0px"} width={hasAd ? "auto": "0px"}>
+            <BannerAd
+                    // It is extremely important to use test IDs as you can be banned/restricted by Google AdMob for inappropriately using real ad banners during testing
+                    unitId={adUnitID}
+                    size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                    requestOptions={{
+                    requestNonPersonalizedAdsOnly: true, 
+                    // You can change this setting depending on whether you want to use the permissions tracking we set up in the initializing
+                    }}
+                    onAdLoaded={() => {
+                    setHasAd(true);
+                    }}
+                />
             </AddViewWrap>
         </HomeScreenContainer>
     )

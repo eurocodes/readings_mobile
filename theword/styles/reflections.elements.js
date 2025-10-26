@@ -133,6 +133,7 @@ height: auto;
 background-color: #263759;
 border-bottom-left-radius: 20px;
 border-bottom-right-radius: 20px;
+padding-top: 50px;
 `;
 
 export const InnerView = styled.View`
@@ -140,7 +141,7 @@ width: 90%;
 `;
 
 export const LowerView = styled.View`
-margin-top: 10px;
+margin-top: 30px;
 justify-content: center;
 align-items: center;
 `;
@@ -165,4 +166,14 @@ export const VideoScreen = styled.SafeAreaView`
 flex: 1;
 background-color: #2e2e2e;
 justify-content: space-between;
+`;
+
+// Buttons
+export const PrevNextContainer = styled.View`
+flex: 1;
+flex-direction: row;
+justify-content: space-between;
+z-index: 1;
+width: 100%;
+margin-bottom: 10px;
 `;

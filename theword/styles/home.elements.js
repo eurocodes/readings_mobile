@@ -31,7 +31,7 @@ border-bottom-right-radius: 65px;
 `;
 
 export const TopText = styled.Text`
-font-size: 38px;
+font-size: 28px;
 font-weight: bold;
 color: #fff;
 padding-left: 16px;
@@ -233,4 +233,15 @@ padding: 0 15px;
 // Ad View
 export const AddViewWrap = styled.View`
 height: ${props => props.height};
+width: ${props => props.height};
+`;
+
+// Buttons
+export const PrevNextContainer = styled.View`
+flex: 1;
+flex-direction: row;
+justify-content: space-between;
+z-index: 1;
+width: 100%;
+margin-bottom: 10px;
 `;

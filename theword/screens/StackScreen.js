@@ -15,7 +15,7 @@ const StackScreens = () => {
         <Stack.Navigator
             initialRouteName="Daily Readings"
             screenOptions={{
-                headerShown: false,
+                headerShown: false
             }}
         >
             <Stack.Screen name="Daily Readings" component={HomeScreen} />
@@ -23,7 +23,7 @@ const StackScreens = () => {
             <Stack.Screen name="Reflection Video" component={VideoFrame} />
             <Stack.Screen name="Daily Reflection Text" component={ReflectionTextList} />
             <Stack.Screen name="Single Reflection" component={ReflectionTextScreen} />
-            <Stack.Screen name="About us" component={AboutScreen} />
+            <Stack.Screen name="About" component={AboutScreen} />
         </Stack.Navigator>
     )
 }

@@ -65,7 +65,7 @@ const ReflectionScreen = ({ navigation }) => {
                         <Feather onPress={() => navigation.openDrawer()} name="menu" size={22} color="#fff" />
                     </HeaderContent>
                     <HeaderTextContainer>
-                        <HeaderText>Daily Reflections Videos</HeaderText>
+                        <HeaderText>Daily Reflection Videos</HeaderText>
                     </HeaderTextContainer>
                     {/* <ReflectionSearch>
                     <Feather name="search" size={22} color="#fff" />

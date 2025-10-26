@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Share, Alert } from 'react-native'
+import { Share, Alert, Platform } from 'react-native'
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer'
 import { Feather } from '@expo/vector-icons';
 import {
@@ -20,9 +20,16 @@ import logo_3 from "../assets/app-icon.png";
 export default function DrawerContent(props) {
 
     const onShare = async () => {
+        let shareUrl = "";
+        if(Platform.OS.toLowerCase() == "ios"){
+            shareUrl = "Download the Daily Catholic Readings And Reflections from App Store at \n \n https://apps.apple.com/ng/app/theword/";
+        }
+        else{
+            shareUrl = "Download the Daily Catholic Readings And Reflections from Google Play at \n \n https://play.google.com/store/apps/details?id=com.ugsoft.theword";
+        }
         try {
             const result = await Share.share({
-                message: "Download Catholic Daily Readings And Reflections App from Google Play at \n \n https://play.google.com/store/apps/details?id=com.euteksoftwares/theword",
+                message: shareUrl,
             });
             if (result.action === Share.sharedAction) {
                 if (result.activityType) {
@@ -66,7 +73,7 @@ export default function DrawerContent(props) {
                             icon={({ color, size }) => (
                                 <Feather name="video" color="#fff" size={size} />
                             )}
-                            label={() => <DrawerItemText>Daily Reflection</DrawerItemText>}
+                            label={() => <DrawerItemText>Daily Reflections</DrawerItemText>}
                             onPress={() => { props.navigation.navigate("Daily Reflection") }}
                         />
                         <DrawerItem
@@ -80,8 +87,8 @@ export default function DrawerContent(props) {
                             icon={({ color, size }) => (
                                 <Feather name="info" color="#fff" size={size} />
                             )}
-                            label={() => <DrawerItemText>About us</DrawerItemText>}
-                            onPress={() => { props.navigation.navigate("About us") }}
+                            label={() => <DrawerItemText>About</DrawerItemText>}
+                            onPress={() => { props.navigation.navigate("About") }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
