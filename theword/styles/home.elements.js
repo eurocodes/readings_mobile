@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components/native";
 
 export const HomeScreenContainer = styled.SafeAreaView`
 flex: 1;

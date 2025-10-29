@@ -2,7 +2,7 @@
   "expo": {
     "name": "Daily Catholic Mass Readings",
     "slug": "daily-catholic-mass-readings-and-reflections",
-    "version": "1.0.0",
+    "version": "1.0.3",
     "icon": "./assets/app-icon.png",
     "splash": {
       "image": "./assets/splash-logo.png",
@@ -33,7 +33,7 @@
         "googleMobileAdsAppId": "ca-app-pub-7087263627307917~6232672567"
       },
       "package": "com.ugsoft.theword",
-      "versionCode": 3
+      "versionCode": 4
     },
     "jsEngine": "hermes",
     "web": {
@@ -44,6 +44,9 @@
       "eas": {
         "projectId": "bb41b795-4451-4a05-b536-f421283e6200"
       }
-    }
+    },
+    "plugins": [
+      "expo-video"
+    ]
   }
 }

@@ -7,6 +7,7 @@ import { Platform } from 'react-native';
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import { PRODUCTION_ID, IOS_PRODUCTION_ID } from '../appKeys';
 import WebView from 'react-native-webview';
+import { useVideoPlayer, VideoView } from 'expo-video';
 
 // Is a real device and running in production.
 //const adUnitID = Constants.isDevice && !__DEV__ ? PRODUCTION_ID : TEST_ID;
@@ -41,17 +42,28 @@ const VideoFrame = ({ route, navigation }) => {
     }
 
     const { id } = route.params;
+    var source = `https://www.youtube.com/watch?v=${id}&list=PLpTzvCOJa7DD9TgXScDzmUNxVbbSBuOSi&start_radio=1`;
     return (
         <VideoScreen >
             <StatusBar style="light" />
             <VideoContainer>
 
             <WebView
-            javaScriptEnabled={true}
+            javaScriptEnabled
+            domStorageEnabled
+            allowsInlineMediaPlayback
+            mediaPlaybackRequiresUserAction={false}
+            allowsFullscreenVideo
+            mixedContentMode="always"
+            originWhitelist={['*']}
             source={{
-            uri: `https://www.youtube.com/embed/${id}?rel=0&autoplay=0&showinfo=0&controls=1`,
+                uri: source
+            //uri: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`,
             }}
+            userAgent="Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36"
             />
+            {/* <VideoView
+            player={ useVideoPlayer(source)} /> */}
 
             </VideoContainer>
             {/* <Button title={playing ? "pause" : "play"} onPress={togglePlaying} /> */}
