@@ -67,28 +67,28 @@ export default function DrawerContent(props) {
                                 <Feather name="book" color="#fff" size={size} />
                             )}
                             label={() => <DrawerItemText>Daily Readings</DrawerItemText>}
-                            onPress={() => { props.navigation.navigate("Daily Readings") }}
+                            onPress={() => { props.navigation.navigate("Home", {screen: "Daily Readings"}) }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
                                 <Feather name="video" color="#fff" size={size} />
                             )}
                             label={() => <DrawerItemText>Daily Reflections</DrawerItemText>}
-                            onPress={() => { props.navigation.navigate("Daily Reflection") }}
+                            onPress={() => { props.navigation.navigate("Home", {screen: "Daily Reflection"}) }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
                                 <Feather name="file-text" color="#fff" size={size} />
                             )}
                             label={() => <DrawerItemText>Daily Reflection</DrawerItemText>}
-                            onPress={() => { props.navigation.navigate("Daily Reflection Text") }}
+                            onPress={() => { props.navigation.navigate("Home", {screen: "Daily Reflection Text"}) }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
                                 <Feather name="info" color="#fff" size={size} />
                             )}
                             label={() => <DrawerItemText>About</DrawerItemText>}
-                            onPress={() => { props.navigation.navigate("About") }}
+                            onPress={() => { props.navigation.navigate("Home", {screen: "About"}) }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (

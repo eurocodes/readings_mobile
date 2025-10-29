@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components/native";
 export const colors = {
     themeCOlor: "#4263ec",
     white: "#fff",
